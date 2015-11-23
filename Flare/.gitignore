@@ -8,3 +8,6 @@
 /.idea/
 /.gradle/
 /build/
+*.apk
+*.ap_
+*.class
