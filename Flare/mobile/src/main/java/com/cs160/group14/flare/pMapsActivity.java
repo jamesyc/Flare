@@ -3,6 +3,7 @@ package com.cs160.group14.flare;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -63,5 +64,9 @@ public class pMapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+
+    public void sendWearButton(View v){
+        pMessageService.sendMessageToWear("Random","Message");
     }
 }

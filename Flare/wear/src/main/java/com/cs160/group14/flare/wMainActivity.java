@@ -27,11 +27,13 @@ public class wMainActivity extends WearableActivity {
         setAmbientEnabled();
 
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        mTextView = (TextView) findViewById(R.id.text);
+        mTextView = (TextView) findViewById(R.id.testText);
         mClockView = (TextView) findViewById(R.id.clock);
 
         startService(new Intent(this, wListenerService.class));
     }
+
+
 
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {
@@ -64,4 +66,6 @@ public class wMainActivity extends WearableActivity {
             mClockView.setVisibility(View.GONE);
         }
     }
+
+
 }

@@ -26,7 +26,14 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".wListenerService" />
+        <service
+            android:name=".wListenerService">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
+        </service>
+
+
     </application>
 
 </manifest>
