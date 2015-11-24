@@ -65,7 +65,7 @@ public class pMessageService extends Service implements
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "GoogleAPIClientConnected!!");
         retrieveDeviceNode();
-        sendMessageToWear(TEST_SEND_TO_WEAR, TEST_SEND_TO_WEAR);
+        //sendMessageToWear(TEST_SEND_TO_WEAR, TEST_SEND_TO_WEAR);
     }
 
     @Override

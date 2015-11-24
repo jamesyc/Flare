@@ -26,6 +26,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".wSignalingActivity"
+            />
+
+
         <service
             android:name=".wListenerService">
             <intent-filter>
