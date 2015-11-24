@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -36,9 +37,23 @@ public class wSignalingActivity extends WearableActivity{
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mMessageReceiver);
+        //unregisterReceiver(mMessageReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         stillRunning = false;
     }
 
@@ -90,7 +105,8 @@ public class wSignalingActivity extends WearableActivity{
                 finish();
             }
         };
-        registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
+        //registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
     }
 
     }

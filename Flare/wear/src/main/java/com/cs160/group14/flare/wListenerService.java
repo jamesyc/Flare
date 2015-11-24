@@ -32,9 +32,11 @@ public class wListenerService extends WearableListenerService {
         String value = new String(messageEvent.getData(), StandardCharsets.UTF_8);
         Log.d(TAG, "onMessagedReceived called " + value);
         if (value.equalsIgnoreCase(wSignalingActivity.STOP_STROBE)){
+            //REACH HERE BUT NOT STOPPING ANYTHING
             Intent stop_strobe_intent = new Intent(wSignalingActivity.STOP_STROBE);
             stop_strobe_intent.putExtra(wSignalingActivity.STOP_STROBE, wSignalingActivity.STOP_STROBE);
             LocalBroadcastManager.getInstance(this).sendBroadcast(stop_strobe_intent);
+            Log.d(TAG, "Sent stop strobe intent");
         } else if (value.equalsIgnoreCase(START_STROBE)){
             if (wSignalingActivity.stillRunning == false) {
                 startActivity(new Intent(this, wSignalingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
