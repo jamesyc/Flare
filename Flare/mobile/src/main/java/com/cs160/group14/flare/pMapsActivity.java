@@ -66,7 +66,11 @@ public class pMapsActivity extends FragmentActivity {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
-    public void sendWearButton(View v){
-        pMessageService.sendMessageToWear("Random","Message");
+    public void sendStartStrobeButton(View v){
+        pMessageService.sendMessageToWear(pMessageService.START_STROBE, pMessageService.START_STROBE);
+    }
+
+    public void sendEndStrobeButton(View v){
+        pMessageService.sendMessageToWear(pMessageService.STOP_STROBE,pMessageService.STOP_STROBE);
     }
 }

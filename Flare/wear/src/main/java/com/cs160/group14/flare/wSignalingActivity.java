@@ -1,5 +1,9 @@
 package com.cs160.group14.flare;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
@@ -12,33 +16,39 @@ import android.widget.LinearLayout;
 public class wSignalingActivity extends WearableActivity{
 
     public static final String TAG = "WearSignallingActivity";
+    public static final String STOP_STROBE = "STOP_STROBE";
+    public BroadcastReceiver mMessageReceiver;
 
-    LinearLayout mLayout;
-    static int limitInSeconds = 30;
-    static boolean sigBool = true;
+    static boolean sigBool = true; //This determines which color to show next
     public static boolean stillRunning = false;
+
+    static int limitInSeconds = 30;
     int frequency = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signaling_layout);
-        //mLayout = (LinearLayout) findViewById(R.id.signalingLayout);
         stillRunning = true;
+        setUpBroadcastReceiver();
+
         createAndStartTimer(frequency);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mMessageReceiver);
+        stillRunning = false;
     }
 
     private void createAndStartTimer(final int frequency){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LinearLayout layout = (LinearLayout) findViewById(R.id.signalingLayout);
-                //boolean sigBool = true;
                 int count = 0;
                 while (true){
-                    if (!stillRunning || count >  wSignalingActivity.limitInSeconds){
-                        return;
-                    }
+                    if (!stillRunning || count >  wSignalingActivity.limitInSeconds)return;
                     changeColor();
                      count+= (frequency) / 1000.0;
                     try{
@@ -66,8 +76,21 @@ public class wSignalingActivity extends WearableActivity{
             }
         });
         }
-
+    /*
     public static void stopStrobe(){
         wSignalingActivity.stillRunning = false;
+    }*/
+
+    public void setUpBroadcastReceiver(){
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Get extra data included in the Intent
+                Log.d(TAG, "Received Strobe destroy");
+                finish();
+            }
+        };
+        registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
     }
+
     }

@@ -32,6 +32,8 @@ public class pMessageService extends Service implements
 
     public static final String TAG = "pMessageService";
     public static final String TEST_SEND_TO_WEAR = "/start_activity";
+    public static final String STOP_STROBE = "STOP_STROBE";
+    public static final String START_STROBE = "START_STROBE";
     public static String wearNodeId;
 
     private static final int CONNECTION_TIME_OUT_MS = 3000;
