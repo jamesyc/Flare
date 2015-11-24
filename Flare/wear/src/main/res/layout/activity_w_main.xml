@@ -7,8 +7,12 @@
     tools:deviceIds="wear"
     android:keepScreenOn="true">
 
-    <TextView android:id="@+id/testText" app:layout_box="all" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:text="@string/hello_world" />
+    <TextView android:id="@+id/testText"
+        app:layout_box="all"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_world"
+        android:gravity="center"/>
 
 
     <TextView android:id="@+id/clock" app:layout_box="all" android:layout_gravity="bottom|start"
