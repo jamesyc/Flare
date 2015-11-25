@@ -32,6 +32,7 @@ public class wMainActivity extends WearableActivity {
     static final Class<?> rightActivity = CurrentLocActivity.class;
     GestureDetectorCompat mGestureDetector;
     BroadcastReceiver mMessageReceiver;
+    IntentFilter myFilter;
     static final String TAG = "wMainActivity";
 
     private BoxInsetLayout mContainerView;
@@ -64,11 +65,14 @@ public class wMainActivity extends WearableActivity {
     /**
      * This should be called every time view comes up
      * Sets layout based on WatchFlags.navModeOn
+     * SHOULD INCLUDE UPDATES TO TEXT/IMAGE VIEWS (for navigation)
      */
     public void setUpViews(){
         if (WatchFlags.navModeOn){
+            /** ADD TEXT/IMAGE VIEW UPDATES **/
             setContentView(R.layout.directions_layout);
             mTextView = (TextView) findViewById(R.id.directionsTextHolder);
+            mTextView.setText(R.string.directionsStringHolder + R.string.streetHolder + currStreet);
             mContainerView = (BoxInsetLayout) findViewById(R.id.directionsContainer);
         } else {
             setContentView(R.layout.activity_w_main);
@@ -92,18 +96,23 @@ public class wMainActivity extends WearableActivity {
     }
 
     public void setUpBroadcastReceiver(){
+        myFilter = new IntentFilter();
+        myFilter.addAction(FlareConstants.TOGGLE_MODE);
+        myFilter.addAction(FlareConstants.NEW_LOC_UPDATE);
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                // Get extra data included in the Intent
                 Log.d(TAG, "Received broadcast: " + intent.getAction());
                 if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
                     Log.d(TAG, "Received Tog");
                     setUpViews();
+                } else if (intent.getAction().equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)){
+                    Log.d(TAG, "Received Loc Update");
+                    setUpViews();
                 }
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(FlareConstants.TOGGLE_MODE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
         Log.d(TAG, "Finished setting up Broadcast receiver");
     }
 
@@ -111,7 +120,7 @@ public class wMainActivity extends WearableActivity {
     protected void onResume() {
         super.onResume();
         setUpViews();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(FlareConstants.TOGGLE_MODE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
     }
 
     @Override

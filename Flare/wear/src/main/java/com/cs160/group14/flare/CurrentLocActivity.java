@@ -27,6 +27,8 @@ public class CurrentLocActivity extends WearableActivity{
     private BoxInsetLayout mContainerView;
     private TextView mTextView;
 
+    public static String currStreet = "THIS SHOULD NEVER BE SEEN";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

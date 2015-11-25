@@ -7,6 +7,7 @@
     tools:deviceIds="wear"
     android:keepScreenOn="true">
 
+
     <TextView android:id="@+id/directionsTextHolder"
         app:layout_box="all"
         android:layout_width="match_parent"

@@ -1,18 +1,21 @@
 package com.dataless.flaresupportlib;
 
+import android.util.Pair;
+
+
 /**
  * Created by AlexJr on 11/25/15.
  */
 public class FlareDatagram {
-
     public String messageType;
 
     public String currStreet;
 
-    /** If these aren't set, wear assumes no change **/
-    public double distanceNextTurn;
-    public FlareConstants.Turn currTurn;
-    public FlareConstants.Turn nextTurn;
+    /** If these have a false as first val, wear assumes no change **/
+    public Pair<Boolean, Double> distanceNextTurn;
+
+    public Pair<Boolean, FlareConstants.Turn> currTurn;
+    public Pair<Boolean, FlareConstants.Turn> nextTurn;
 
     public FlareDatagram(String messageType){
         this.messageType = messageType;
@@ -30,8 +33,16 @@ public class FlareDatagram {
         return new FlareDatagram(FlareConstants.TOGGLE_MODE);
     }
 
+    private static FlareDatagram defaultLocUpdate(){
+        FlareDatagram datagram = new FlareDatagram(FlareConstants.NEW_LOC_UPDATE);
+        datagram.distanceNextTurn = new Pair<>(false, 0.0);
+        datagram.currTurn = new Pair<>(false, FlareConstants.Turn.LEFT);
+        datagram.nextTurn = new Pair<>(false, FlareConstants.Turn.LEFT);
+        return datagram;
+    }
+
     public static FlareDatagram makeLocUpdateDatagram(String currentStreet){
-        FlareDatagram data = new FlareDatagram(FlareConstants.NEW_LOC_UPDATE);
+        FlareDatagram data = defaultLocUpdate();
         data.currStreet = currentStreet;
 
         /** ABSOLUTELY ADD WAY MORE INFO TO THIS**/

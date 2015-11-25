@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.cs160.group14.flare.watchUtils.NavFieldSetter;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
 import com.dataless.flaresupportlib.FlareConstants;
 import com.dataless.flaresupportlib.FlareDatagram;
@@ -53,6 +54,13 @@ public class wListenerService extends WearableListenerService {
     }
 
     public void handleLocUpdate(FlareDatagram datagram){
+        //update appropriate static fields in classes
+        NavFieldSetter.updateNavigation(datagram);
+        // Need to broadcast that navigation information may have changed
+        // (and screens need to reload their shit)
+        Intent navUpdateIntent = new Intent(FlareConstants.NEW_LOC_UPDATE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(navUpdateIntent);
+        Log.d(TAG, "Send navigation update broadcast");
 
     }
 
