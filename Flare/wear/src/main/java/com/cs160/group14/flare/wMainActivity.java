@@ -37,30 +37,29 @@ public class wMainActivity extends WearableActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_w_main);
+
         setUpViews();
 
         setUpBroadcastReceiver();
         setUpGestureDetector();
         setAmbientEnabled();
 
-        //mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        //mTextView = (TextView) findViewById(R.id.testText);
+
         //Do mode specific things
-        /**
-        String mode = "navModeOff";
-        if (WatchFlags.navModeOn){
-            mode = "navModeOn";
-        }
-        mTextView.setText(mTextView.getText() + " " + mode); **/
+
         //Start the listener to listen for phone messages
         startService(new Intent(this, wListenerService.class));
     }
 
+    /**
+     * This should be called every time view comes up
+     * Sets layout based on WatchFlags.
+     */
     public void setUpViews(){
         if (WatchFlags.navModeOn){
             setContentView(R.layout.directions_layout);
             mTextView = (TextView) findViewById(R.id.directionsTextHolder);
+            mContainerView = (BoxInsetLayout) findViewById(R.id.directionsContainer);
         } else {
             setContentView(R.layout.activity_w_main);
             mContainerView = (BoxInsetLayout) findViewById(R.id.container);
@@ -102,6 +101,7 @@ public class wMainActivity extends WearableActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setUpViews();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.TOGGLE_MODE));
     }
 
