@@ -10,6 +10,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.cs160.group14.flare.mobileUtils.MobileFlags;
+
 public class pMapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -67,10 +69,14 @@ public class pMapsActivity extends FragmentActivity {
     }
 
     public void sendStartStrobeButton(View v){
-        pMessageService.sendMessageToWear(pMessageService.START_STROBE, pMessageService.START_STROBE);
+        pMessageService.sendMessageToWear(MobileFlags.START_STROBE, MobileFlags.START_STROBE);
     }
 
     public void sendEndStrobeButton(View v){
-        pMessageService.sendMessageToWear(pMessageService.STOP_STROBE,pMessageService.STOP_STROBE);
+        pMessageService.sendMessageToWear(MobileFlags.STOP_STROBE,MobileFlags.STOP_STROBE);
+    }
+
+    public void sendToggleModeMessage(View v){
+        pMessageService.sendMessageToWear(MobileFlags.TOGGLE_MODE, MobileFlags.TOGGLE_MODE );
     }
 }

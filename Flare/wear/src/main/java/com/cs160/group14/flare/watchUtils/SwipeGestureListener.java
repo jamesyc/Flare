@@ -10,6 +10,7 @@ import android.view.MotionEvent;
  * Created by AlexJr on 11/24/15.
  * Use this class to sense gestures on the screen and open activities.
  * You must implement dispatchTouchEvent method in your activity and register this listener for it to work
+ * RIGHT SWIPES ARE DISABLED. We let android destroy the activity and rebuild it later
  */
 public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
     private static final String TAG =  "SwipeGestureListener";

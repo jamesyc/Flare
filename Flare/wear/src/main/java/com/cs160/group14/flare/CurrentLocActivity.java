@@ -56,6 +56,7 @@ public class CurrentLocActivity extends WearableActivity{
     }
 
 
+
     /** Everything after this is for Ambience**/
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {
