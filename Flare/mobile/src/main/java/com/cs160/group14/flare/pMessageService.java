@@ -152,9 +152,9 @@ public class pMessageService extends Service implements
      * Gson serializes everything, you just need to fill in the right arguments
      * and update the FlareDatagram class accordingly
      */
-    public static void sendLocUpdate(){
+    public static void sendLocUpdate(String tempArg){
         FlareDatagram locationDirectionDatagram = FlareDatagram.
-                makeLocUpdateDatagram("Random Hardcoded Street PLEASE CHANGE");
+                makeLocUpdateDatagram(tempArg);
         String data = new Gson().toJson(locationDirectionDatagram, FlareDatagram.class);
         sendMessageToWear(FlareConstants.NEW_LOC_UPDATE, data);
     }

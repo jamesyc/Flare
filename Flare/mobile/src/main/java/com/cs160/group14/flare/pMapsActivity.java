@@ -14,6 +14,7 @@ public class pMapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
+    private int counter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +84,6 @@ public class pMapsActivity extends FragmentActivity {
 
     public void sendLocationUpdateMessage(View v){
         /** THIS SHOULD BE CHANGED TO REFLECT THE ACTUAL DIRECITONS WE WANT TO SEND**/
-        pMessageService.sendLocUpdate();
+        pMessageService.sendLocUpdate("Street " + counter++);
     }
 }

@@ -72,7 +72,8 @@ public class wMainActivity extends WearableActivity {
             /** ADD TEXT/IMAGE VIEW UPDATES **/
             setContentView(R.layout.directions_layout);
             mTextView = (TextView) findViewById(R.id.directionsTextHolder);
-            mTextView.setText(R.string.directionsStringHolder + R.string.streetHolder + currStreet);
+            mTextView.setText(getString(R.string.directionsStringHolder)
+                    + getString(R.string.streetHolder) + " " + currStreet);
             mContainerView = (BoxInsetLayout) findViewById(R.id.directionsContainer);
         } else {
             setContentView(R.layout.activity_w_main);
