@@ -5,6 +5,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.cs160.group14.flare.watchUtils.WatchFlags;
+import com.dataless.flaresupportlib.FlareConstants;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -31,13 +32,14 @@ public class wListenerService extends WearableListenerService {
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        String value = new String(messageEvent.getData(), StandardCharsets.UTF_8);
-        Log.d(TAG, "Received :  " + value + " message from mobile");
-        if (value.equalsIgnoreCase(WatchFlags.STOP_STROBE)){
+        String path = messageEvent.getPath();
+        String data = new String(messageEvent.getData(), StandardCharsets.UTF_8);
+        Log.d(TAG, "Received :  " + path + " message from mobile");
+        if (path.equalsIgnoreCase(FlareConstants.STOP_STROBE)){
             handleStopStrobe();
-        } else if (value.equalsIgnoreCase(WatchFlags.START_STROBE)){
+        } else if (path.equalsIgnoreCase(FlareConstants.START_STROBE)){
             handleStartStrobe();
-        } else if (value.equalsIgnoreCase(WatchFlags.TOGGLE_MODE)){
+        } else if (path.equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
             handleToggleNavMode();
         }
 

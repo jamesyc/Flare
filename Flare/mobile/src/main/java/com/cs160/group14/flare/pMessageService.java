@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.dataless.flaresupportlib.FlareConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
@@ -16,6 +17,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +31,7 @@ public class pMessageService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     public static GoogleApiClient mGoogleApiClient;
+    public Gson;
 
     public static final String TAG = "pMessageService";
 
@@ -119,7 +122,7 @@ public class pMessageService extends Service implements
                         new ResultCallback() {
                             @Override
                             public void onResult(Result result) {
-                                Log.d(TAG,  "Sent message with result: " + result.getStatus().getStatusMessage());
+                                Log.d(TAG, "Sent message with result: " + result.getStatus().getStatusMessage());
                             }
 
 
@@ -127,5 +130,9 @@ public class pMessageService extends Service implements
                 );
             }
         }).start();
+    }
+
+    public static void sendStrobeStop(){
+        sendMessageToWear(FlareConstants.STOP_STROBE, );
     }
 }
