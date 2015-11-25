@@ -97,13 +97,13 @@ public class wMainActivity extends WearableActivity {
             public void onReceive(Context context, Intent intent) {
                 // Get extra data included in the Intent
                 Log.d(TAG, "Received broadcast: " + intent.getAction());
-                if (intent.getAction().equalsIgnoreCase(WatchFlags.TOGGLE_MODE)){
+                if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
                     Log.d(TAG, "Received Tog");
                     setUpViews();
                 }
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.TOGGLE_MODE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(FlareConstants.TOGGLE_MODE));
         Log.d(TAG, "Finished setting up Broadcast receiver");
     }
 
@@ -111,7 +111,7 @@ public class wMainActivity extends WearableActivity {
     protected void onResume() {
         super.onResume();
         setUpViews();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.TOGGLE_MODE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(FlareConstants.TOGGLE_MODE));
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.dataless.flaresupportlib.FlareConstants;
+import com.dataless.flaresupportlib.FlareDatagram;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
@@ -31,7 +32,7 @@ public class pMessageService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     public static GoogleApiClient mGoogleApiClient;
-    public Gson;
+
 
     public static final String TAG = "pMessageService";
 
@@ -133,6 +134,28 @@ public class pMessageService extends Service implements
     }
 
     public static void sendStrobeStop(){
-        sendMessageToWear(FlareConstants.STOP_STROBE, );
+        String data = new Gson().toJson(FlareDatagram.makeStopStrobeDataGram(), FlareDatagram.class);
+        sendMessageToWear(FlareConstants.STOP_STROBE, data);
+    }
+
+    public static void sendStrobeStart(){
+        String data = new Gson().toJson(FlareDatagram.makeStartStrobeGram(), FlareDatagram.class);
+        sendMessageToWear(FlareConstants.START_STROBE,data);
+    }
+
+    public static void sendToggleMessage(){
+        String data = new Gson().toJson(FlareDatagram.makeToggleModeDataGram(), FlareDatagram.class);
+        sendMessageToWear(FlareConstants.TOGGLE_MODE, data);
+    }
+
+    /**This is how we push location updates to the wear.
+     * Gson serializes everything, you just need to fill in the right arguments
+     * and update the FlareDatagram class accordingly
+     */
+    public static void sendLocUpdate(){
+        FlareDatagram locationDirectionDatagram = FlareDatagram.
+                makeLocUpdateDatagram("Random Hardcoded Street PLEASE CHANGE");
+        String data = new Gson().toJson(locationDirectionDatagram, FlareDatagram.class);
+        sendMessageToWear(FlareConstants.NEW_LOC_UPDATE, data);
     }
 }

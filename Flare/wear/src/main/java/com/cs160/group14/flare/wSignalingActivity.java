@@ -11,7 +11,7 @@ import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-import com.cs160.group14.flare.watchUtils.WatchFlags;
+import com.dataless.flaresupportlib.FlareConstants;
 
 /**
  * Created by AlexJr on 11/23/15.
@@ -43,7 +43,7 @@ public class wSignalingActivity extends WearableActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.STOP_STROBE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(FlareConstants.STOP_STROBE));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class wSignalingActivity extends WearableActivity{
                 finish();
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.STOP_STROBE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(FlareConstants.STOP_STROBE));
     }
 
     }
