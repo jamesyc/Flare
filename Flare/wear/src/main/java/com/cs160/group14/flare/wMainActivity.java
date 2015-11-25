@@ -15,6 +15,10 @@ import android.widget.TextView;
 
 import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
+import com.dataless.flaresupportlib.FlareConstants;
+import com.dataless.flaresupportlib.FlareDatagram;
+import com.dataless.flaresupportlib.FlareConstants.Turn;
+
 
 /**
  * Created by AlexJr on 11/17/15
@@ -32,6 +36,12 @@ public class wMainActivity extends WearableActivity {
 
     private BoxInsetLayout mContainerView;
     private TextView mTextView;
+
+    FlareDatagram gram = null;
+    public static Turn currTurnType = Turn.STRAIGHT;
+    public static Turn nextTurnType = Turn.STRAIGHT;
+    public static double distToTurn = 0.0;
+    public static String currStreet = "This should never be shown to users";
 
 
     @Override
@@ -53,7 +63,7 @@ public class wMainActivity extends WearableActivity {
 
     /**
      * This should be called every time view comes up
-     * Sets layout based on WatchFlags.
+     * Sets layout based on WatchFlags.navModeOn
      */
     public void setUpViews(){
         if (WatchFlags.navModeOn){
@@ -62,9 +72,8 @@ public class wMainActivity extends WearableActivity {
             mContainerView = (BoxInsetLayout) findViewById(R.id.directionsContainer);
         } else {
             setContentView(R.layout.activity_w_main);
-            mContainerView = (BoxInsetLayout) findViewById(R.id.container);
+            mContainerView = (BoxInsetLayout) findViewById(R.id.mainWearContainer);
             mTextView = (TextView) findViewById(R.id.testText);
-            mTextView.setText(mTextView.getText() + " " + "navModeOn");
         }
     }
 
