@@ -1,7 +1,11 @@
 package com.cs160.group14.flare;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
@@ -23,6 +27,7 @@ public class wMainActivity extends WearableActivity {
 
     static final Class<?> rightActivity = CurrentLocActivity.class;
     GestureDetectorCompat mGestureDetector;
+    BroadcastReceiver mMessageReceiver;
     static final String TAG = "wMainActivity";
 
     private BoxInsetLayout mContainerView;
@@ -34,8 +39,10 @@ public class wMainActivity extends WearableActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_w_main);
 
+        setUpBroadcastReceiver();
         setUpGestureDetector();
         setAmbientEnabled();
+
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         mTextView = (TextView) findViewById(R.id.testText);
         //Do mode specific things
@@ -62,7 +69,33 @@ public class wMainActivity extends WearableActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+    public void setUpBroadcastReceiver(){
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Get extra data included in the Intent
+                Log.d(TAG, "Received broadcast: " + intent.getAction());
+                if (intent.getAction().equalsIgnoreCase(WatchFlags.TOGGLE_MODE)){
+                    Log.d(TAG, "Received Tog");
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.TOGGLE_MODE));
+        Log.d(TAG, "Finished setting up Broadcast receiver");
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.TOGGLE_MODE));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+
+    }
 
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {

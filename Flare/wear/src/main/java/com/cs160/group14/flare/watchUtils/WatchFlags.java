@@ -8,6 +8,7 @@ public class WatchFlags {
 
     public static String START_STROBE = "START_STROBE";
     public static final String STOP_STROBE = "STOP_STROBE";
+    public static final String TOGGLE_MODE = "TOGGLE_MODE";
 
     public static boolean navModeOn = false;
 }

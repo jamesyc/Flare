@@ -32,17 +32,39 @@ public class wListenerService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
         String value = new String(messageEvent.getData(), StandardCharsets.UTF_8);
-        Log.d(TAG, "onMessagedReceived called " + value);
+        Log.d(TAG, "Received :  " + value + " message from mobile");
         if (value.equalsIgnoreCase(WatchFlags.STOP_STROBE)){
-            Intent stop_strobe_intent = new Intent(WatchFlags.STOP_STROBE);
-            stop_strobe_intent.putExtra(WatchFlags.STOP_STROBE, WatchFlags.STOP_STROBE);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(stop_strobe_intent);
-            Log.d(TAG, "Sent stop strobe intent");
+            handleStopStrobe();
         } else if (value.equalsIgnoreCase(WatchFlags.START_STROBE)){
-            if (wSignalingActivity.stillRunning == false) {
-                startActivity(new Intent(this, wSignalingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
+            handleStartStrobe();
+        } else if (value.equalsIgnoreCase(WatchFlags.TOGGLE_MODE)){
+            handleToggleNavMode();
         }
 
+    }
+
+    public void handleToggleNavMode(){
+        WatchFlags.navModeOn = !WatchFlags.navModeOn;
+        broadCastNavmodeToggle();
+    }
+
+    public void broadCastNavmodeToggle(){
+        Intent navmode_toggle_intent = new Intent(WatchFlags.TOGGLE_MODE);
+        navmode_toggle_intent.putExtra(WatchFlags.TOGGLE_MODE, WatchFlags.TOGGLE_MODE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(navmode_toggle_intent);
+        Log.d(TAG, "Sent NavMode Toggle broadcast");
+    }
+
+    public void handleStopStrobe(){
+        Intent stop_strobe_intent = new Intent(WatchFlags.STOP_STROBE);
+        stop_strobe_intent.putExtra(WatchFlags.STOP_STROBE, WatchFlags.STOP_STROBE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(stop_strobe_intent);
+        Log.d(TAG, "Sent stop strobe intent broadcast");
+    }
+
+    public void handleStartStrobe(){
+        if (wSignalingActivity.stillRunning == false) {
+            startActivity(new Intent(this, wSignalingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        }
     }
 }
