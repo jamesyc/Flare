@@ -1,6 +1,5 @@
 package com.cs160.group14.flare;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.wearable.activity.WearableActivity;
@@ -13,48 +12,42 @@ import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
 
 /**
- * Created by AlexJr on 11/17/15
- * This is the leftmost screen (enter nav), the first one the user sees
- * Non-Nav Mode: Show "Enter destination" layout
- * Nav Mode: Show directions, update appropriately
- * Screen to the right of this should be the CurrentLocActivity
+ * Created by AlexJr on 11/24/15.
+ * This is the second screen to the left.
+ * Exiting this should bring you to the leftmost screen
+ * Mode: Non-Nav, could be either? MIGHT CHANGE TO EITHER
+ * Screen to the right should be the gesture toggle screen
  */
-public class wMainActivity extends WearableActivity {
+public class CurrentLocActivity extends WearableActivity{
 
-    static final Class<?> rightActivity = CurrentLocActivity.class;
+    static final Class<?> rightActivity = wSignalingActivity.class;
+    public static String TAG = "CurrentLocActivity";
     GestureDetectorCompat mGestureDetector;
-    static final String TAG = "wMainActivity";
 
     private BoxInsetLayout mContainerView;
     private TextView mTextView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_w_main);
+        setContentView(R.layout.current_loc_layout);
 
         setUpGestureDetector();
         setAmbientEnabled();
-        mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        mTextView = (TextView) findViewById(R.id.testText);
-        //Do mode specific things
+        mContainerView = (BoxInsetLayout) findViewById(R.id.currentLocContainer);
+        mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
         String mode = "navModeOff";
         if (WatchFlags.navModeOn){
             mode = "navModeOn";
         }
         mTextView.setText(mTextView.getText() + " " + mode);
-        //Start the listener to listen for phone messages
-        startService(new Intent(this, wListenerService.class));
     }
 
     public void setUpGestureDetector(){
         Log.d(TAG, "Set up gesture detector");
-        SwipeGestureListener customListener =
-                new SwipeGestureListener(this, rightActivity);
+        SwipeGestureListener customListener = new SwipeGestureListener(this, rightActivity);
         this.mGestureDetector = new GestureDetectorCompat(this, customListener);
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -63,7 +56,7 @@ public class wMainActivity extends WearableActivity {
     }
 
 
-
+    /** Everything after this is for Ambience**/
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {
         super.onEnterAmbient(ambientDetails);

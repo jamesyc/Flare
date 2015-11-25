@@ -29,8 +29,9 @@
 
         <activity
             android:name=".wSignalingActivity"
-
             />
+
+        <activity android:name=".CurrentLocActivity" />
 
 
         <service
