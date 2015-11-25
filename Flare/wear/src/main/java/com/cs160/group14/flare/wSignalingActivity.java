@@ -27,6 +27,8 @@ public class wSignalingActivity extends WearableActivity{
 
     static int limitInSeconds = 30;
     int frequency = 500;
+    int color1 = Color.CYAN;
+    int color2 = Color.GREEN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +86,9 @@ public class wSignalingActivity extends WearableActivity{
                 LinearLayout layout = (LinearLayout) findViewById(R.id.signalingLayout);
                 Log.d(TAG, "Change Color called: " + wSignalingActivity.sigBool);
                 if (wSignalingActivity.sigBool) { //One color
-                    layout.setBackgroundColor(Color.RED);
+                    layout.setBackgroundColor(color1);
                 } else {
-                    layout.setBackgroundColor(Color.YELLOW);
+                    layout.setBackgroundColor(color2);
                 }
                 wSignalingActivity.sigBool = !wSignalingActivity.sigBool;
             }
@@ -103,7 +105,6 @@ public class wSignalingActivity extends WearableActivity{
                 finish();
             }
         };
-        //registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.STOP_STROBE));
     }
 

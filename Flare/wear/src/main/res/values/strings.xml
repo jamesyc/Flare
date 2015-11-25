@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Flare</string>
-    <string name="hello_world">Hello World!</string>
+    <string name="mode1placeholder1">Mode 1 Screen 1 \n(This will probably say "please enter your destination")</string>
 </resources>
