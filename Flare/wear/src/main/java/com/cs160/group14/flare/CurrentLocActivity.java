@@ -1,6 +1,11 @@
 package com.cs160.group14.flare;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
@@ -10,6 +15,7 @@ import android.widget.TextView;
 
 import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
+import com.dataless.flaresupportlib.FlareConstants;
 
 /**
  * Created by AlexJr on 11/24/15.
@@ -23,26 +29,70 @@ public class CurrentLocActivity extends WearableActivity{
     static final Class<?> rightActivity = wSignalingActivity.class;
     public static String TAG = "CurrentLocActivity";
     GestureDetectorCompat mGestureDetector;
+    IntentFilter myFilter;
+    private BroadcastReceiver mMessageReceiver;
 
     private BoxInsetLayout mContainerView;
     private TextView mTextView;
 
-    public static String currStreet = "THIS SHOULD NEVER BE SEEN";
+    public static String currStreet = "Curr Street: THIS SHOULD NEVER BE SEEN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.current_loc_layout);
+        setUpViews();
 
+        setUpBroadcastReceiver();
         setUpGestureDetector();
         setAmbientEnabled();
+    }
+
+    /** Might have to add a second view to this, but for now,
+     * regardless of whether navmode is on or not, we show current location n stuff
+     */
+    public void setUpViews(){
+        //if (WatchFlags.navModeOn) <-- might want to add later if we add second layout to this
+        setContentView(R.layout.current_loc_layout);
         mContainerView = (BoxInsetLayout) findViewById(R.id.currentLocContainer);
         mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
         String mode = "navModeOff";
         if (WatchFlags.navModeOn){
             mode = "navModeOn";
         }
-        mTextView.setText(mTextView.getText() + " " + mode);
+        mTextView.setText(mTextView.getText() + " " + mode + "\n" + currStreet);
+
+
+    }
+
+    public void setUpBroadcastReceiver(){
+        myFilter = new IntentFilter();
+        myFilter.addAction(FlareConstants.NEW_LOC_UPDATE);
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "Received broadcast: " + intent.getAction());
+                if (intent.getAction().equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)){
+                    Log.d(TAG, "Received Loc Update");
+                    setUpViews();
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
+        Log.d(TAG, "Finished setting up Broadcast receiver");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpViews();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+
     }
 
     public void setUpGestureDetector(){
