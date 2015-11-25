@@ -11,13 +11,15 @@ import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.cs160.group14.flare.watchUtils.WatchFlags;
+
 /**
  * Created by AlexJr on 11/23/15.
  */
 public class wSignalingActivity extends WearableActivity{
 
     public static final String TAG = "WearSignallingActivity";
-    public static final String STOP_STROBE = "STOP_STROBE";
+
     public BroadcastReceiver mMessageReceiver;
 
     static boolean sigBool = true; //This determines which color to show next
@@ -39,7 +41,7 @@ public class wSignalingActivity extends WearableActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.STOP_STROBE));
     }
 
     @Override
@@ -52,7 +54,6 @@ public class wSignalingActivity extends WearableActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregisterReceiver(mMessageReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         stillRunning = false;
     }
@@ -91,10 +92,7 @@ public class wSignalingActivity extends WearableActivity{
             }
         });
         }
-    /*
-    public static void stopStrobe(){
-        wSignalingActivity.stillRunning = false;
-    }*/
+
 
     public void setUpBroadcastReceiver(){
         mMessageReceiver = new BroadcastReceiver() {
@@ -106,7 +104,7 @@ public class wSignalingActivity extends WearableActivity{
             }
         };
         //registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(STOP_STROBE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WatchFlags.STOP_STROBE));
     }
 
     }

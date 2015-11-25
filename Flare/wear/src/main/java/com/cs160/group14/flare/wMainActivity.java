@@ -39,7 +39,7 @@ public class wMainActivity extends WearableActivity {
         lst.mParent = this;
         this.mGestureDetector = new GestureDetectorCompat(this, lst);
     }
-    
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
