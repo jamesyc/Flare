@@ -37,22 +37,36 @@ public class wMainActivity extends WearableActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_w_main);
+        //setContentView(R.layout.activity_w_main);
+        setUpViews();
 
         setUpBroadcastReceiver();
         setUpGestureDetector();
         setAmbientEnabled();
 
-        mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        mTextView = (TextView) findViewById(R.id.testText);
+        //mContainerView = (BoxInsetLayout) findViewById(R.id.container);
+        //mTextView = (TextView) findViewById(R.id.testText);
         //Do mode specific things
+        /**
         String mode = "navModeOff";
         if (WatchFlags.navModeOn){
             mode = "navModeOn";
         }
-        mTextView.setText(mTextView.getText() + " " + mode);
+        mTextView.setText(mTextView.getText() + " " + mode); **/
         //Start the listener to listen for phone messages
         startService(new Intent(this, wListenerService.class));
+    }
+
+    public void setUpViews(){
+        if (WatchFlags.navModeOn){
+            setContentView(R.layout.directions_layout);
+            mTextView = (TextView) findViewById(R.id.directionsTextHolder);
+        } else {
+            setContentView(R.layout.activity_w_main);
+            mContainerView = (BoxInsetLayout) findViewById(R.id.container);
+            mTextView = (TextView) findViewById(R.id.testText);
+            mTextView.setText(mTextView.getText() + " " + "navModeOn");
+        }
     }
 
     public void setUpGestureDetector(){
@@ -77,6 +91,7 @@ public class wMainActivity extends WearableActivity {
                 Log.d(TAG, "Received broadcast: " + intent.getAction());
                 if (intent.getAction().equalsIgnoreCase(WatchFlags.TOGGLE_MODE)){
                     Log.d(TAG, "Received Tog");
+                    setUpViews();
                 }
             }
         };
