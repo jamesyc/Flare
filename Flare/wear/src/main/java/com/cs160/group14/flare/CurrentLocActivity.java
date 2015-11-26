@@ -83,6 +83,7 @@ public class CurrentLocActivity extends WearableActivity{
                     setUpViews();
                 } else if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
                     setUpGestureDetector();
+                    setUpViews();
                     Log.d(TAG, "Received Toggle Update");
                 }
             }
