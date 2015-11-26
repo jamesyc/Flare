@@ -11,6 +11,7 @@ import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.cs160.group14.flare.watchUtils.WatchFlags;
 import com.dataless.flaresupportlib.FlareConstants;
 
 /**
@@ -33,6 +34,11 @@ public class wSignalingActivity extends WearableActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!WatchFlags.gestureSensingOn){
+            Log.d(TAG, "THIS IS NOT OKAY\nSIGNALING SHOULD NOT TURN ON WHILE GESTURE" +
+                    "SENSING MODE IS OFF\nDESTROYING ACTIVITY");
+            finish();
+        }
         setContentView(R.layout.signaling_layout);
         stillRunning = true;
         setUpBroadcastReceiver();

@@ -84,6 +84,10 @@ public class wListenerService extends WearableListenerService {
     }
 
     public void handleStartStrobe(){
+        if (!WatchFlags.gestureSensingOn){
+            Log.d(TAG, "Gesture sensing mode is off, aborting start strobe command");
+            return;
+        }
         if (wSignalingActivity.stillRunning == false) {
             startActivity(new Intent(this, wSignalingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }

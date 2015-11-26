@@ -8,7 +8,7 @@ public class WatchFlags {
 
 
 
-
+    public static boolean gestureSensingOn = true;
 
     public static boolean navModeOn = false;
 }
