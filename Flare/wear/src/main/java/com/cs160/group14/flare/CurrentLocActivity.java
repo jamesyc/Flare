@@ -106,7 +106,7 @@ public class CurrentLocActivity extends WearableActivity{
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
 
     }
-
+    /**Good to call this everytime we load to ensure correct order of views**/
     public void setUpGestureDetector(){
         setRightActivity();
         Log.d(TAG, "Set up gesture detector");

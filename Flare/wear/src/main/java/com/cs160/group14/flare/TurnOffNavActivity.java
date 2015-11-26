@@ -11,6 +11,7 @@ import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
@@ -44,6 +45,12 @@ public class TurnOffNavActivity extends WearableActivity {
         setUpBroadcastReceiver();
         setUpGestureDetector();
         setAmbientEnabled();
+    }
+
+    public void onNavButtonClick(View v){
+        Log.d(TAG, "Turn off nav mode clicked, destroying activity!");
+        WatchFlags.navModeOn = false;
+        finish();
     }
 
     public void setUpView(){

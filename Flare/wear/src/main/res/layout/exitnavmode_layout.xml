@@ -12,9 +12,11 @@
     android:keepScreenOn="true">
 
     <ImageButton
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/cat"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/stop"
+        android:layout_gravity="center"
+        android:onClick="onNavButtonClick"
         />
 
 
