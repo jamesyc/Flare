@@ -6,6 +6,9 @@ import com.dataless.flaresupportlib.FlareDatagram;
 
 /**
  * Created by AlexJr on 11/25/15.
+ * This class should be called to set appropriate fields when receiving directions
+ * datagrams.The logic for reminding activities to reload is NOT done here,
+ * just setting of static string fields
  */
 public class NavFieldSetter {
 

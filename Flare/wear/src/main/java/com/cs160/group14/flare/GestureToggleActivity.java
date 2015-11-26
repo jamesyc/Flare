@@ -15,17 +15,17 @@ import android.view.View;
 
 import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
-import com.dataless.flaresupportlib.FlareConstants;
 
 /**
- * Created by AlexJr on 11/25/15.
- * This activity should only ever be active when navigation mode is on
+ * Created by AlexJr on 11/26/15.
+ * This activity regulates the gesture sensing mode toggle screen
+ * Corresponds to two different layouts (one saying we're on, one for off)
  */
-public class TurnOffNavActivity extends WearableActivity {
+public class GestureToggleActivity extends WearableActivity {
 
-    /**RIGHT ACTIVITY SHOULD BE GESTURE SENSE MODE TOGGLE SCREEN **/
-    static final Class<?> rightActivity = GestureToggleActivity.class;
-    public static String TAG = "TurnOffNavActivity";
+    /**RIGHT ACTIVITY SHOULD BE OPEN ON PHONE SCREEN **/
+    static final Class<?> rightActivity = wSignalingActivity.class;
+    public static String TAG = "GestureToggleActivity";
     GestureDetectorCompat mGestureDetector;
     IntentFilter myFilter;
     private BroadcastReceiver mMessageReceiver;
@@ -36,11 +36,6 @@ public class TurnOffNavActivity extends WearableActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!WatchFlags.navModeOn) {
-            Log.d(TAG, "THIS IS NOT OKAY\nTHIS ACTIVITY SHOULD NOT BE CREATED\n" +
-                    "WHEN NAVMODE IS OFF");
-            finish();
-        }
         setUpView();
 
         setUpBroadcastReceiver();
@@ -48,29 +43,29 @@ public class TurnOffNavActivity extends WearableActivity {
         setAmbientEnabled();
     }
 
-    public void onNavButtonClick(View v){
-        Log.d(TAG, "Turn off nav mode clicked, destroying activity!");
-        WatchFlags.navModeOn = false;
-        finish();
+    public void onGestureToggleClick(View v){
+        Log.d(TAG, "Gesture Toggle clicked");
+        WatchFlags.gestureSensingOn = !WatchFlags.gestureSensingOn;
+        setUpView();
     }
 
     public void setUpView(){
-        setContentView(R.layout.exitnavmode_layout);
-        mContainerView = (BoxInsetLayout) findViewById(R.id.turnOffNavContainer);
-
+        if (WatchFlags.gestureSensingOn){
+            setContentView(R.layout.gesture_tog_on_layout);
+            mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOnContainer);
+        } else{
+            setContentView(R.layout.gesture_tog_off_layout);
+            mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOffContainer);
+        }
     }
 
+    //No real reason to have a broadcast receiver but lets set one up anyway
     public void setUpBroadcastReceiver(){
         myFilter = new IntentFilter();
-        myFilter.addAction(FlareConstants.TOGGLE_MODE);
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "Received broadcast: " + intent.getAction());
-                if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
-                    Log.d(TAG, "Received toggle");
-                    if (!WatchFlags.navModeOn) finish();
-                }
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
@@ -80,9 +75,6 @@ public class TurnOffNavActivity extends WearableActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!WatchFlags.navModeOn){
-            finish();
-        }
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
     }
 

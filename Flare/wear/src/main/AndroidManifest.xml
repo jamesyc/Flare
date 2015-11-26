@@ -32,9 +32,8 @@
             />
 
         <activity android:name=".CurrentLocActivity" />
-
         <activity android:name=".TurnOffNavActivity" />
-
+        <activity android:name=".GestureToggleActivity" />
 
         <service
             android:name=".wListenerService">

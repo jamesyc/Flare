@@ -64,7 +64,7 @@ public class CurrentLocActivity extends WearableActivity{
 
     public void setRightActivity(){
         if (!WatchFlags.navModeOn){
-            rightActivity = wSignalingActivity.class;
+            rightActivity = GestureToggleActivity.class;
         } else {
             rightActivity = TurnOffNavActivity.class;
         }
