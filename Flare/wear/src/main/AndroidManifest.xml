@@ -33,6 +33,8 @@
 
         <activity android:name=".CurrentLocActivity" />
 
+        <activity android:name=".TurnOffNavActivity" />
+
 
         <service
             android:name=".wListenerService">

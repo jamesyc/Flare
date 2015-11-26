@@ -11,79 +11,57 @@ import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.TextView;
 
 import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
 import com.dataless.flaresupportlib.FlareConstants;
 
 /**
- * Created by AlexJr on 11/24/15.
- * This is the second screen to the left.
- * Exiting this should bring you to the leftmost screen
- * Mode: Non-Nav, could be either? MIGHT CHANGE TO EITHER
- * Screen to the right should be the gesture toggle screen
+ * Created by AlexJr on 11/25/15.
  */
-public class CurrentLocActivity extends WearableActivity{
+public class TurnOffNavActivity extends WearableActivity {
 
-    static Class<?> rightActivity = wSignalingActivity.class;
-    public static String TAG = "CurrentLocActivity";
+    /**RIGHT ACTIVITY SHOULD BE GESTURE SENSE MODE TOGGLE SCREEN **/
+    static final Class<?> rightActivity = wSignalingActivity.class;
+    public static String TAG = "TurnOffNavActivity";
     GestureDetectorCompat mGestureDetector;
     IntentFilter myFilter;
     private BroadcastReceiver mMessageReceiver;
 
     private BoxInsetLayout mContainerView;
-    private TextView mTextView;
-
-    public static String currStreet = "Curr Street: THIS SHOULD NEVER BE SEEN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUpViews();
+
+        if (!WatchFlags.navModeOn) {
+            Log.d(TAG, "THIS IS NOT OKAY\nTHIS ACTIVITY SHOULD NOT BE CREATED\n" +
+                    "WHEN NAVMODE IS OFF");
+            finish();
+        }
+        setUpView();
 
         setUpBroadcastReceiver();
         setUpGestureDetector();
         setAmbientEnabled();
     }
 
-    /** Might have to add a second view to this, but for now,
-     * regardless of whether navmode is on or not, we show current location n stuff
-     */
-    public void setUpViews(){
-        //if (WatchFlags.navModeOn) <-- might want to add later if we add second layout to this
-        setContentView(R.layout.current_loc_layout);
-        mContainerView = (BoxInsetLayout) findViewById(R.id.currentLocContainer);
-        mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
-        String mode = "navModeOff";
-        if (WatchFlags.navModeOn){
-            mode = "navModeOn";
-        }
-        mTextView.setText(mTextView.getText() + " " + mode + "\n" + currStreet);
-    }
+    public void setUpView(){
+        setContentView(R.layout.exitnavmode_layout);
+        mContainerView = (BoxInsetLayout) findViewById(R.id.turnOffNavContainer);
 
-    public void setRightActivity(){
-        if (!WatchFlags.navModeOn){
-            rightActivity = wSignalingActivity.class;
-        } else {
-            rightActivity = TurnOffNavActivity.class;
-        }
     }
 
     public void setUpBroadcastReceiver(){
         myFilter = new IntentFilter();
-        myFilter.addAction(FlareConstants.NEW_LOC_UPDATE);
         myFilter.addAction(FlareConstants.TOGGLE_MODE);
         mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "Received broadcast: " + intent.getAction());
-                if (intent.getAction().equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)){
-                    Log.d(TAG, "Received Loc Update");
-                    setUpViews();
-                } else if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
-                    setUpGestureDetector();
-                    Log.d(TAG, "Received Toggle Update");
+                if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
+                    Log.d(TAG, "Received toggle");
+                    if (!WatchFlags.navModeOn) finish();
                 }
             }
         };
@@ -94,8 +72,9 @@ public class CurrentLocActivity extends WearableActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        setUpViews();
-        setUpGestureDetector();
+        if (!WatchFlags.navModeOn){
+            finish();
+        }
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
     }
 
@@ -107,7 +86,6 @@ public class CurrentLocActivity extends WearableActivity{
     }
 
     public void setUpGestureDetector(){
-        setRightActivity();
         Log.d(TAG, "Set up gesture detector");
         SwipeGestureListener customListener = new SwipeGestureListener(this, rightActivity);
         this.mGestureDetector = new GestureDetectorCompat(this, customListener);
@@ -118,8 +96,6 @@ public class CurrentLocActivity extends WearableActivity{
         this.mGestureDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
-
-
 
     /** Everything after this is for Ambience**/
     @Override
