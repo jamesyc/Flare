@@ -49,6 +49,7 @@ public class TurnOffNavActivity extends WearableActivity {
     }
 
     public void onNavButtonClick(View v){
+        wListenerService.sendNavToggle();
         Log.d(TAG, "Turn off nav mode clicked, destroying activity!");
         WatchFlags.navModeOn = false;
         finish();

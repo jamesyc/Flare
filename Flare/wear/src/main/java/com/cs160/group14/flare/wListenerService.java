@@ -1,6 +1,7 @@
 package com.cs160.group14.flare;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -8,19 +9,33 @@ import com.cs160.group14.flare.watchUtils.NavFieldSetter;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
 import com.dataless.flaresupportlib.FlareConstants;
 import com.dataless.flaresupportlib.FlareDatagram;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by AlexJr on 11/23/15.
  * This service listens for messages from the phone.
  */
-public class wListenerService extends WearableListenerService {
+public class wListenerService extends WearableListenerService  implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     public static String TAG = "wListenerService";
+    private static final int CONNECTION_TIME_OUT_MS = 3000;
+    public static String mobileNodeId;
+
+    public static GoogleApiClient mGoogleApiClient;
 
 
 
@@ -28,6 +43,7 @@ public class wListenerService extends WearableListenerService {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate called");
+        setUpAPIClientAndConnect();
     }
 
 
@@ -91,5 +107,79 @@ public class wListenerService extends WearableListenerService {
         if (wSignalingActivity.stillRunning == false) {
             startActivity(new Intent(this, wSignalingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
+    }
+
+    public void setUpAPIClientAndConnect(){
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        Log.d(TAG, "---- Set up API Client ----");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "GoogleAPIClientConnected!!");
+        retrieveDeviceNode();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(TAG, "---- Failed connection result: " + connectionResult.getErrorMessage());
+        mGoogleApiClient.connect();
+    }
+
+    private void retrieveDeviceNode() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                wListenerService.mGoogleApiClient.blockingConnect(CONNECTION_TIME_OUT_MS, TimeUnit.MILLISECONDS);
+                NodeApi.GetConnectedNodesResult result =
+                        Wearable.NodeApi.getConnectedNodes(wListenerService.mGoogleApiClient).await();
+
+                List<Node> nodes = result.getNodes();
+
+                if (nodes.size() > 0) {
+                    wListenerService.mobileNodeId = nodes.get(0).getId();
+                }
+                Log.d(TAG, "Device Node: " + mobileNodeId);
+            }
+        }).start();
+    }
+
+    public static void sendMessageToMobile(final String path, final String text){
+        Log.d(TAG, "Attempting to send message to mobile");
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mGoogleApiClient ).await();
+                Log.d(TAG, "sending to node" + text);
+                if (nodes.getNodes().isEmpty()){
+                    Log.d(TAG,  "No nodes found (maybe you're not connected?");
+                    return;
+                }
+                Wearable.MessageApi.sendMessage(mGoogleApiClient, nodes.getNodes().get(0).getId(), path, text.getBytes() ).setResultCallback(
+                        new ResultCallback() {
+                            @Override
+                            public void onResult(Result result) {
+                                Log.d(TAG, "Sent message with result: " + result.getStatus().getStatusMessage());
+                            }
+                        }
+                );
+            }
+        }).start();
+    }
+
+    public static void sendNavToggle(){
+        FlareDatagram navToggleDatagram = FlareDatagram.makeToggleModeDataGram();
+        String data = new Gson().toJson(navToggleDatagram, FlareDatagram.class);
+        sendMessageToMobile(FlareConstants.TOGGLE_MODE, data);
     }
 }
