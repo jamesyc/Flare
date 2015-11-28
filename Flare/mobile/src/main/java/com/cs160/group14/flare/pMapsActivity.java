@@ -16,6 +16,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+/**
+ * Created by AlexJr on 11/17/15
+ * This is the main activity for mobile.
+ * For testing I've put in buttons to trigger events on wear
+ * Final product should just be a map with destination input
+ */
 public class pMapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.

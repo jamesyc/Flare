@@ -2,9 +2,12 @@ package com.dataless.flaresupportlib;
 
 import android.util.Pair;
 
+import com.google.gson.Gson;
+
 
 /**
  * Created by AlexJr on 11/25/15.
+ * This is the
  */
 public class FlareDatagram {
     public String messageType;
@@ -47,5 +50,13 @@ public class FlareDatagram {
 
         /** ABSOLUTELY ADD WAY MORE INFO TO THIS**/
         return data;
+    }
+
+    public String serializeMe(){
+        return new Gson().toJson(this, FlareDatagram.class);
+    }
+
+    public static FlareDatagram deserialize(String json){
+        return new Gson().fromJson(json, FlareDatagram.class);
     }
 }

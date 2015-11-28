@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by AlexJr on 11/23/15.
  * This service listens for messages from the phone.
+ * Messages are serialized json versions of FlareDatagrams
  */
 public class wListenerService extends WearableListenerService  implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{

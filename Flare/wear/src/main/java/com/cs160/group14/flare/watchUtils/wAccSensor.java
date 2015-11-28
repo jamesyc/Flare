@@ -16,6 +16,8 @@ import com.dataless.flaresupportlib.FlareConstants;
 
 /**
  * Created by AlexJr on 11/27/15.
+ * This service is started by wMainActivity, listens for accelermeter events
+ * When gesturesensing mode is on, we start/stop strobe activity appropriately
  */
 public class wAccSensor extends Service implements SensorEventListener{
 

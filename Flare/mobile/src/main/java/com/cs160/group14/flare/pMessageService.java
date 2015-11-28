@@ -135,12 +135,14 @@ public class pMessageService extends Service implements
 
     public static void sendStrobeStop(){
         String data = new Gson().toJson(FlareDatagram.makeStopStrobeDataGram(), FlareDatagram.class);
-        sendMessageToWear(FlareConstants.STOP_STROBE, data);
+        //sendMessageToWear(FlareConstants.STOP_STROBE, data);
+        sendMessageToWear(FlareConstants.STOP_STROBE, FlareDatagram.makeStopStrobeDataGram().serializeMe());
     }
 
     public static void sendStrobeStart(){
         String data = new Gson().toJson(FlareDatagram.makeStartStrobeGram(), FlareDatagram.class);
-        sendMessageToWear(FlareConstants.START_STROBE,data);
+        //sendMessageToWear(FlareConstants.START_STROBE,data);
+        sendMessageToWear(FlareConstants.START_STROBE, FlareDatagram.makeStartStrobeGram().serializeMe());
     }
 
     public static void sendToggleMessage(){
