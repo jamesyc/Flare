@@ -18,7 +18,6 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
-import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -64,8 +63,7 @@ public class wListenerService extends WearableListenerService  implements
             handleToggleNavMode();
         } else if (path.equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)){
             String strData = new String(messageEvent.getData(), StandardCharsets.UTF_8);
-            FlareDatagram data = new Gson().fromJson(strData, FlareDatagram.class);
-            handleLocUpdate(data);
+            handleLocUpdate(FlareDatagram.deserialize(strData));
         }
 
     }
@@ -179,8 +177,7 @@ public class wListenerService extends WearableListenerService  implements
     }
 
     public static void sendNavToggle(){
-        FlareDatagram navToggleDatagram = FlareDatagram.makeToggleModeDataGram();
-        String data = new Gson().toJson(navToggleDatagram, FlareDatagram.class);
-        sendMessageToMobile(FlareConstants.TOGGLE_MODE, data);
+        sendMessageToMobile(FlareConstants.TOGGLE_MODE,
+                FlareDatagram.makeToggleModeDataGram().serializeMe());
     }
 }

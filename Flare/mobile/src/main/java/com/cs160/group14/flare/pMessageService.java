@@ -18,7 +18,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -134,20 +133,16 @@ public class pMessageService extends Service implements
     }
 
     public static void sendStrobeStop(){
-        String data = new Gson().toJson(FlareDatagram.makeStopStrobeDataGram(), FlareDatagram.class);
-        //sendMessageToWear(FlareConstants.STOP_STROBE, data);
         sendMessageToWear(FlareConstants.STOP_STROBE, FlareDatagram.makeStopStrobeDataGram().serializeMe());
     }
 
     public static void sendStrobeStart(){
-        String data = new Gson().toJson(FlareDatagram.makeStartStrobeGram(), FlareDatagram.class);
-        //sendMessageToWear(FlareConstants.START_STROBE,data);
         sendMessageToWear(FlareConstants.START_STROBE, FlareDatagram.makeStartStrobeGram().serializeMe());
     }
 
     public static void sendToggleMessage(){
-        String data = new Gson().toJson(FlareDatagram.makeToggleModeDataGram(), FlareDatagram.class);
-        sendMessageToWear(FlareConstants.TOGGLE_MODE, data);
+        sendMessageToWear(FlareConstants.TOGGLE_MODE,
+                FlareDatagram.makeToggleModeDataGram().serializeMe());
     }
 
     /**This is how we push location updates to the wear.
@@ -155,9 +150,7 @@ public class pMessageService extends Service implements
      * and update the FlareDatagram class accordingly
      */
     public static void sendLocUpdate(String tempArg){
-        FlareDatagram locationDirectionDatagram = FlareDatagram.
-                makeLocUpdateDatagram(tempArg);
-        String data = new Gson().toJson(locationDirectionDatagram, FlareDatagram.class);
-        sendMessageToWear(FlareConstants.NEW_LOC_UPDATE, data);
+        sendMessageToWear(FlareConstants.NEW_LOC_UPDATE,
+                FlareDatagram.makeLocUpdateDatagram(tempArg).serializeMe());
     }
 }
