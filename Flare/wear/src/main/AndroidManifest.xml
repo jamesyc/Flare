@@ -3,7 +3,7 @@
     package="com.cs160.group14.flare" >
 
     <uses-feature android:name="android.hardware.type.watch" />
-
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -42,6 +42,7 @@
             </intent-filter>
         </service>
 
+        <service android:name=".watchUtils.wAccSensor"/>
 
     </application>
 

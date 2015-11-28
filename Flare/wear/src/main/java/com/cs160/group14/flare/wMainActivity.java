@@ -15,9 +15,10 @@ import android.widget.TextView;
 
 import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
+import com.cs160.group14.flare.watchUtils.wAccSensor;
 import com.dataless.flaresupportlib.FlareConstants;
-import com.dataless.flaresupportlib.FlareDatagram;
 import com.dataless.flaresupportlib.FlareConstants.Turn;
+import com.dataless.flaresupportlib.FlareDatagram;
 
 
 /**
@@ -55,11 +56,15 @@ public class wMainActivity extends WearableActivity {
         setUpGestureDetector();
         setAmbientEnabled();
 
-
-        //Do mode specific things
-
         //Start the listener to listen for phone messages
         startService(new Intent(this, wListenerService.class));
+        startService(new Intent(this, wAccSensor.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this, wAccSensor.class));
     }
 
     /**
