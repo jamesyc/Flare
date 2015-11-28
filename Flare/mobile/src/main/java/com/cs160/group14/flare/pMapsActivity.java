@@ -21,6 +21,7 @@ public class pMapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_p_maps);
         setUpMapIfNeeded();
         startService(new Intent(this, pMessageService.class));
+        startService(new Intent(this, pMobileListenerService.class));
     }
 
     @Override
