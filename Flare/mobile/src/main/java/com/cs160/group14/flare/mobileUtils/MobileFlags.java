@@ -5,7 +5,7 @@ package com.cs160.group14.flare.mobileUtils;
  */
 public class MobileFlags {
 
-    /** WILL NOT BE USED ANYMORE, MOVED TO flaresupportlib.FlareConstants**/
+    public boolean navModeOn = false;
     /*
     public static final String TEST_SEND_TO_WEAR = "/start_activity";
     public static final String STOP_STROBE = "STOP_STROBE";
