@@ -1,5 +1,7 @@
 package com.cs160.group14.flare;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.dataless.flaresupportlib.FlareConstants;
@@ -27,6 +29,9 @@ public class pMobileListenerService extends WearableListenerService {
     }
 
     public void handleStopNavEvent(){
-
+        Intent navmode_toggle_intent = new Intent(FlareConstants.TOGGLE_MODE);
+        navmode_toggle_intent.putExtra(FlareConstants.TOGGLE_MODE,FlareConstants.TOGGLE_MODE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(navmode_toggle_intent);
+        Log.d(TAG, "Sent NavMode Toggle broadcast");
     }
 }

@@ -1,10 +1,16 @@
 package com.cs160.group14.flare;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 
+import com.dataless.flaresupportlib.FlareConstants;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -14,12 +20,17 @@ public class pMapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
+    BroadcastReceiver mMessageReceiver;
+    IntentFilter myFilter;
+
     private int counter;
+    static final String TAG = "pMapsActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_p_maps);
         setUpMapIfNeeded();
+        setUpBroadcastReceiver();
         startService(new Intent(this, pMessageService.class));
         startService(new Intent(this, pMobileListenerService.class));
     }
@@ -28,6 +39,7 @@ public class pMapsActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
     }
 
     /**
@@ -86,5 +98,34 @@ public class pMapsActivity extends FragmentActivity {
     public void sendLocationUpdateMessage(View v){
         /** THIS SHOULD BE CHANGED TO REFLECT THE ACTUAL DIRECITONS WE WANT TO SEND**/
         pMessageService.sendLocUpdate("Street " + counter++);
+    }
+
+    public void setUpBroadcastReceiver(){
+        myFilter = new IntentFilter();
+        myFilter.addAction(FlareConstants.TOGGLE_MODE);
+        myFilter.addAction(FlareConstants.NEW_LOC_UPDATE);
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "Received broadcast: " + intent.getAction());
+                if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
+                    Log.d(TAG, "Received Toggle");
+                    handleNavToggle();
+                } else if (intent.getAction().equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)){
+                    Log.d(TAG, "Received Loc Update");
+                    handleLocUpdate();
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
+        Log.d(TAG, "Finished setting up Broadcast receiver");
+    }
+
+    public void handleNavToggle(){
+
+    }
+
+    public void handleLocUpdate(){
+        /** Might be useful **/
     }
 }
