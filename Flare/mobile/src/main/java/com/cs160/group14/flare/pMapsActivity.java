@@ -1,11 +1,15 @@
 package com.cs160.group14.flare;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -30,17 +34,53 @@ public class pMapsActivity extends FragmentActivity {
     IntentFilter myFilter;
 
     private int counter;
+    private int requestCode;
+    // I have no clue what the following line does but it seems to be needed
+    private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 99;
     static final String TAG = "pMapsActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_p_maps);
+        // Ask for ACCESS_FINE_LOCATION permissions
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "API version >=23, location is not enabled; need to request");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            } else {
+                Log.d(TAG, "API version >=23, location is enabled");
+                startService(new Intent(this, pNavService.class));
+            }
+        } else {
+            Log.d(TAG, "API version <23, location assumed enabled");
+            startService(new Intent(this, pNavService.class));
+        }
+
         setUpMapIfNeeded();
         setUpBroadcastReceiver();
         startService(new Intent(this, pMessageService.class));
         startService(new Intent(this, pMobileListenerService.class));
-        startService(new Intent(this, pNavService.class));
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                Log.d(TAG, "API version >=23, location onRequestPermissionsResult");
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
+                    Log.d(TAG, "API version >=23, location permission granted");
+                    startService(new Intent(this, pNavService.class));
+                } else {
+                    // permission denied, boo!
+                    Log.d(TAG, "API version >=23, location permission denied");
+                }
+                return;
+            }
+        }
     }
 
     @Override

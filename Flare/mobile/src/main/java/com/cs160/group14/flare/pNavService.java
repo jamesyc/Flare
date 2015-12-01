@@ -113,12 +113,15 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         // mLastLocation is Location to be sent
 
-//        if (mLastLocation != null) {
-//            double latitude = mLastLocation.getLatitude();
-//            double longitude = mLastLocation.getLongitude();
-//        } else {
-//            // Couldn't get the location. Make sure location is enabled on the device
-//        }
+        if (mLastLocation != null) {
+            Log.d(TAG, "Location obtained!!!");
+            double latitude = mLastLocation.getLatitude();
+            double longitude = mLastLocation.getLongitude();
+        } else {
+            // Couldn't get the location. Make sure location is enabled on the device
+            Log.d(TAG, "Location is currently set to null! Darn.");
+
+        }
     }
 
     @Override
