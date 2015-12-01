@@ -39,6 +39,8 @@ public class pMapsActivity extends FragmentActivity {
         setUpBroadcastReceiver();
         startService(new Intent(this, pMessageService.class));
         startService(new Intent(this, pMobileListenerService.class));
+        startService(new Intent(this, pNavService.class));
+
     }
 
     @Override
