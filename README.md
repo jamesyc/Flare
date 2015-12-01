@@ -2,5 +2,5 @@
 
 Roles: 
 
-*Alex - Code Skeleton
-*Clark & Ronald - Interaction Flow
+* Alex - Code Skeleton
+* Clark & Ronald - Interaction Flow
