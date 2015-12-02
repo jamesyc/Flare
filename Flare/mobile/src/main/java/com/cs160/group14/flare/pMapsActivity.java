@@ -134,4 +134,10 @@ public class pMapsActivity extends FragmentActivity {
     public void handleLocUpdate(){
         /** Might be useful **/
     }
+
+    public void launchTutorial(View v){
+        Log.d(TAG, "Launching tutorial activity");
+        startActivity(new Intent(this, TutorialActivity.class));
+
+    }
 }
