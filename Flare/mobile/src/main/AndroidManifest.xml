@@ -36,6 +36,9 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".TutorialActivity"
+            android:screenOrientation="portrait" />
+
 
         <service
             android:name=".pMessageService"
