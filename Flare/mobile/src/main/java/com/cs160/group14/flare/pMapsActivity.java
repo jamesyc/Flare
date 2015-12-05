@@ -20,6 +20,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.skobbler.ngx.SKPrepareMapTextureListener;
+import com.skobbler.ngx.SKPrepareMapTextureThread;
+import com.skobbler.ngx.map.SKMapSurfaceView;
+import com.skobbler.ngx.util.SKLogging;
+import com.skobbler.ngx.versioning.SKMapUpdateListener;
+import com.skobbler.ngx.versioning.SKVersioningManager;
+
 
 /**
  * Created by AlexJr on 11/17/15
@@ -56,7 +63,12 @@ public class pMapsActivity extends FragmentActivity {
             Log.d(TAG, "API version <23, location assumed enabled");
             startService(new Intent(this, pNavService.class));
         }
-        
+
+        SKLogging.enableLogs(true);
+
+        final SKPrepareMapTextureThread prepThread = new SKPrepareMapTextureThread(this, mapResDirPath, "SKMaps.zip", this)
+        prepThread.start();
+
         setUpMapIfNeeded();
         setUpBroadcastReceiver();
         startService(new Intent(this, pMessageService.class));

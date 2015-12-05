@@ -18,7 +18,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/SKMaps.jar')
+    provided files('libs/SKMaps.jar')
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.google.guava:guava:18.0'
     compile 'joda-time:joda-time:2.4'
