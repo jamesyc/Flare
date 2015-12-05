@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':flaresupportlib'
+include ':mobile', ':wear', ':flaresupportlib', ':sdktools'

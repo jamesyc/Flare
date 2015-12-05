@@ -20,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
 /**
  * Created by AlexJr on 11/17/15
  * This is the main activity for mobile.
@@ -55,7 +56,7 @@ public class pMapsActivity extends FragmentActivity {
             Log.d(TAG, "API version <23, location assumed enabled");
             startService(new Intent(this, pNavService.class));
         }
-
+        
         setUpMapIfNeeded();
         setUpBroadcastReceiver();
         startService(new Intent(this, pMessageService.class));
