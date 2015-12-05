@@ -6,19 +6,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.dataless.flaresupportlib.FlareConstants;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.wearable.Wearable;
+
+import org.w3c.dom.Document;
+
+import java.util.ArrayList;
+
+import static com.google.android.gms.location.LocationServices.API;
 
 /**
  * Created by AlexJr on 11/17/15
@@ -26,7 +43,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * For testing I've put in buttons to trigger events on wear
  * Final product should just be a map with destination input
  */
-public class pMapsActivity extends FragmentActivity {
+public class pMapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -37,11 +54,20 @@ public class pMapsActivity extends FragmentActivity {
     private int requestCode;
     // I have no clue what the following line does but it seems to be needed
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 99;
+
+    private GoogleApiClient mGoogleApiClient;
+    int PLACE_PICKER_REQUEST = 33;
+
+
     static final String TAG = "pMapsActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_p_maps);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         // Ask for ACCESS_FINE_LOCATION permissions
         if (android.os.Build.VERSION.SDK_INT >= 23) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -61,8 +87,29 @@ public class pMapsActivity extends FragmentActivity {
         startService(new Intent(this, pMessageService.class));
         startService(new Intent(this, pMobileListenerService.class));
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(API)
+                .addApi(Wearable.API).addApi(LocationServices.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
     }
 
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(Bundle arg0) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(TAG, "---- Failed connection result: " + connectionResult.getErrorMessage());
+        mGoogleApiClient.connect();
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -125,7 +172,7 @@ public class pMapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(13, 100)).title("Marker"));
     }
 
     public void sendStartStrobeButton(View v){
@@ -175,6 +222,47 @@ public class pMapsActivity extends FragmentActivity {
 
     public void handleLocUpdate(){
         /** Might be useful **/
+    }
+
+    public void selectDestination(View v){
+        Log.d(TAG, "Launching select dest activity");
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        } catch (Exception e) {
+            Log.e(TAG, "google play error");
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
+
+                // private GoogleMap mMap;
+                pGMapDirections md = new pGMapDirections();
+
+                LatLng fromPosition = new LatLng(13.687140112679154, 100.53525868803263);
+                LatLng toPosition = new LatLng(13.683660045847258, 100.53900808095932);
+
+
+                Document doc = md.getDocument(fromPosition, toPosition, pGMapDirections.MODE_BICYCLING);
+                ArrayList<LatLng> directionPoint = md.getDirection(doc);
+                PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
+
+                for(int i = 0 ; i < directionPoint.size() ; i++) {
+                    rectLine.add(directionPoint.get(i));
+                }
+
+                mMap.addPolyline(rectLine);
+
+
+            }
+        }
     }
 
     public void launchTutorial(View v){
