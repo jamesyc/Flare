@@ -5,26 +5,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/currentLocContainer"
-    tools:context=".CurrentLocActivity"
+    android:id="@+id/gestureTogOffContainer"
+    tools:context=".GestureToggleActivity"
     tools:deviceIds="wear"
-    android:keepScreenOn="true">
+    android:background="@color/grey"
+    android:keepScreenOn="true"
+    >
 
-    <TextView android:id="@+id/currentLocTextHolder"
-        app:layout_box="all"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/currentLocPlaceholder"
-        android:gravity="center"/>
+
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/onoffbutton"
+        android:layout_gravity="center"
+        android:onClick="onGestureToggleClick"
+        />
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/two_of_3"
+        android:src="@drawable/four_of_4"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="130dp"
 
         android:contentDescription="dots" />
-
 
 </android.support.wearable.view.BoxInsetLayout>

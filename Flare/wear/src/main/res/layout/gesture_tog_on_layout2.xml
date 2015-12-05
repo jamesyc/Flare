@@ -2,27 +2,32 @@
 <android.support.wearable.view.BoxInsetLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:id="@+id/directionsContainer" tools:context=".wMainActivity"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/gestureTogOnContainer"
+    tools:context=".GestureToggleActivity"
     tools:deviceIds="wear"
+    android:background="#4fc769"
     android:keepScreenOn="true">
 
-
-    <TextView android:id="@+id/directionsTextHolder"
-        app:layout_box="all"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/directionsStringHolder"
-        android:gravity="center"/>
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/onoffbutton"
+        android:layout_gravity="center"
+        android:onClick="onGestureToggleClick"
+        />
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/o_of_4"
+        android:src="@drawable/four_of_4"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="130dp"
 
         android:contentDescription="dots" />
+
 
 
 </android.support.wearable.view.BoxInsetLayout>

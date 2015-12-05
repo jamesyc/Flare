@@ -9,7 +9,8 @@
     tools:context=".GestureToggleActivity"
     tools:deviceIds="wear"
     android:background="@color/grey"
-    android:keepScreenOn="true">
+    android:keepScreenOn="true"
+    >
 
 
     <ImageButton
@@ -20,7 +21,13 @@
         android:onClick="onGestureToggleClick"
         />
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/three_of_3"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="130dp"
 
-
+        android:contentDescription="dots" />
 
 </android.support.wearable.view.BoxInsetLayout>

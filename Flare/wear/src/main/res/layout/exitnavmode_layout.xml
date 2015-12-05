@@ -8,17 +8,25 @@
     android:id="@+id/turnOffNavContainer"
     tools:context=".TurnOffNavActivity"
     tools:deviceIds="wear"
-    android:background="@color/white"
+    android:background="#f8810a"
     android:keepScreenOn="true">
 
     <ImageButton
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:background="@drawable/stop"
         android:layout_gravity="center"
         android:onClick="onNavButtonClick"
         />
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/three_of_4"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="130dp"
+
+        android:contentDescription="dots" />
 
 
 

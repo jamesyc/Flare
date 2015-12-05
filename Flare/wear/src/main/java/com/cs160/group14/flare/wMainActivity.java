@@ -75,13 +75,13 @@ public class wMainActivity extends WearableActivity {
     public void setUpViews(){
         if (WatchFlags.navModeOn){
             /** ADD TEXT/IMAGE VIEW UPDATES **/
-            setContentView(R.layout.directions_layout);
+            setContentView(R.layout.directions_layout);//1_of_4 dots
             mTextView = (TextView) findViewById(R.id.directionsTextHolder);
             mTextView.setText(getString(R.string.directionsStringHolder)
                     + getString(R.string.streetHolder) + " " + currStreet);
             mContainerView = (BoxInsetLayout) findViewById(R.id.directionsContainer);
         } else {
-            setContentView(R.layout.activity_w_main);
+            setContentView(R.layout.activity_w_main);//1_of_3 dots
             mContainerView = (BoxInsetLayout) findViewById(R.id.mainWearContainer);
             mTextView = (TextView) findViewById(R.id.testText);
         }

@@ -49,16 +49,19 @@ public class CurrentLocActivity extends WearableActivity{
 
     /** Might have to add a second view to this, but for now,
      * regardless of whether navmode is on or not, we show current location n stuff
+     * Note: current_loc_layout is for NAVMODE OFF; current_loc_layout2 is for NAVMODE ON (4 dots)
      */
     public void setUpViews(){
-        //if (WatchFlags.navModeOn) <-- might want to add later if we add second layout to this
-        setContentView(R.layout.current_loc_layout);
+        String mode = "navModeOff";
+        if (WatchFlags.navModeOn) {// <-- might want to add later if we add second layout to this
+            setContentView(R.layout.current_loc_layout2);//4 dots
+            mode = "navModeOn";
+        } else {
+            setContentView(R.layout.current_loc_layout);//3 dots
+        }
         mContainerView = (BoxInsetLayout) findViewById(R.id.currentLocContainer);
         mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
-        String mode = "navModeOff";
-        if (WatchFlags.navModeOn){
-            mode = "navModeOn";
-        }
+
         mTextView.setText(mTextView.getText() + " " + mode + "\n" + currStreet);
     }
 
