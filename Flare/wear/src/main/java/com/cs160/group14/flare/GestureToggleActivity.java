@@ -50,12 +50,22 @@ public class GestureToggleActivity extends WearableActivity {
     }
 
     public void setUpView(){
-        if (WatchFlags.gestureSensingOn){
-            setContentView(R.layout.gesture_tog_on_layout);
-            mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOnContainer);
-        } else{
-            setContentView(R.layout.gesture_tog_off_layout);
-            mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOffContainer);
+        if(WatchFlags.navModeOn) {//set four_of_4 dots, set version 2 layout
+            if (WatchFlags.gestureSensingOn){
+                setContentView(R.layout.gesture_tog_on_layout2);
+                mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOnContainer);
+            } else{
+                setContentView(R.layout.gesture_tog_off_layout2);
+                mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOffContainer);
+            }
+        } else {//set version 1, three_of_3 dots (original)
+            if (WatchFlags.gestureSensingOn){
+                setContentView(R.layout.gesture_tog_on_layout);
+                mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOnContainer);
+            } else{
+                setContentView(R.layout.gesture_tog_off_layout);
+                mContainerView = (BoxInsetLayout) findViewById(R.id.gestureTogOffContainer);
+            }
         }
     }
 
