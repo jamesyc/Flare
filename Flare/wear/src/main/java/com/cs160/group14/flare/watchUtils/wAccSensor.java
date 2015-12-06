@@ -29,7 +29,7 @@ public class wAccSensor extends Service implements SensorEventListener{
     static float mAccelLast;
     static float mAccel;
     static float mAccelCurrent;
-    static int TIME_THRESH = 5000;
+    static int TIME_THRESH = 250;
 
     static double lasttime = new Double(0);//So that you can implement some kind of timer threshold
 
@@ -51,6 +51,25 @@ public class wAccSensor extends Service implements SensorEventListener{
         if (WatchFlags.gestureSensingOn && (curr_time > lasttime + TIME_THRESH)) {
             Log.d(TAG, "Sensor changed " + event.values[0] + "-" + event.values[1] + "-" + event.values[2]);
             lasttime = curr_time;
+
+            if(y < -8) {
+                Log.d(TAG, "Left Gesture position!!!");
+                // attempt to detect left gesture position
+                // however some cyclist use vertical handrail which detected as left gesture
+            }
+
+
+            float gX = event.values[0] / SensorManager.GRAVITY_EARTH;
+            float gY = event.values[1] / SensorManager.GRAVITY_EARTH;
+            float gZ = event.values[2] / SensorManager.GRAVITY_EARTH;
+            // gForce will be close to 1 when there is no movement
+            float gForce = (float)Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+            float SHAKE_THRESHOLD = 1.2f;
+            if(gForce > SHAKE_THRESHOLD) {
+                Log.d(TAG, "SHAKEDD!!!");
+                turnStrobeOn();
+            }
+
         }
     }
 

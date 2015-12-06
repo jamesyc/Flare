@@ -27,9 +27,9 @@ public class wSignalingActivity extends WearableActivity{
     public static boolean stillRunning = false;
 
     static int limitInSeconds = 30;
-    int frequency = 500;
-    int color1 = Color.CYAN;
-    int color2 = Color.GREEN;
+    int frequency = 200;
+    int color1 = Color.rgb(237,156,26);
+    int color2 = Color.rgb(107,107,107);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,7 @@ public class wSignalingActivity extends WearableActivity{
                     if (!stillRunning || count >  wSignalingActivity.limitInSeconds)return;
                     changeColor();
                      count+= (frequency) / 1000.0;
+                    Log.d(TAG,Integer.toString(count)+String.valueOf(stillRunning));
                     try{
                         Thread.sleep(frequency);
                     } catch (InterruptedException e) {
