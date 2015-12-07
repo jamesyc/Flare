@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Flare</string>
-    <string name="mode1placeholder1">PassiveMode -  Screen 1 \n(This will probably say "please enter your destination")</string>
+    <string name="mode1placeholder1">\nPlease enter your destination from Mobile.</string>
     <string name="directionsStringHolder">Navmode - Screen 1\nNow we are in directions mode\nThere should be some directions here eventually..</string>
     <string name="streetHolder">\nStreet:</string>
+    <string name="navTitle">Nav Mode</string>
     <string name="currentLocPlaceholder">Current Location Screen Placeholder</string>
 
 </resources>

@@ -5,15 +5,28 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:id="@+id/directionsContainer" tools:context=".wMainActivity"
     tools:deviceIds="wear"
-    android:keepScreenOn="true">
+    android:keepScreenOn="true"
+    android:background="#272222">
 
+
+    <TextView android:id="@+id/navTitle"
+        app:layout_box="all"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="@string/navTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:textColor="@android:color/white"
+        android:gravity="center_horizontal"
+        android:textSize="20dp" />
 
     <TextView android:id="@+id/directionsTextHolder"
         app:layout_box="all"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/directionsStringHolder"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textColor="@android:color/white" />
 
     <ImageView
         android:layout_width="100dp"

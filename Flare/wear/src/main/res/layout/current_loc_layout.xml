@@ -8,7 +8,8 @@
     android:id="@+id/currentLocContainer"
     tools:context=".CurrentLocActivity"
     tools:deviceIds="wear"
-    android:keepScreenOn="true">
+    android:keepScreenOn="true"
+    android:background="#272222">
 
     <TextView android:id="@+id/currentLocTextHolder"
         app:layout_box="all"
