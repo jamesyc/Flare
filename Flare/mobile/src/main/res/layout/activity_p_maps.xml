@@ -26,6 +26,12 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:text="Select Destination"
+        android:onClick="selectDestination"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:text="Launch tutorial"
         android:onClick="launchTutorial"
         />
