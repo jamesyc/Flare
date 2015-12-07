@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.StrictMode;
@@ -27,10 +28,12 @@ import com.google.android.gms.drive.Drive;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.wearable.Wearable;
 
@@ -65,8 +68,19 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
     private final int PLACE_PICKER_REQUEST = 33;
 
     // Binding pNavService
-    pNavService pnav;
-    boolean isBound = false;
+    pNavService pNav;
+    boolean pNavIsBound = false;
+
+    // Tracking locations
+    boolean locEnabled = false;
+    Location destLoc = null;
+    Location currLoc = null;
+
+    // Google map drawing and directions
+    pGMapDirections md = null;
+    Document directionsDoc;
+    ArrayList<LatLng> directionPoints;
+    PolylineOptions rectLines = null;
 
 
     @Override
@@ -85,6 +99,7 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             } else {
                 Log.d(TAG, "API version >=23, location is enabled");
+                locEnabled = true;
 //                startService(new Intent(this, pNavService.class));
                 Intent intent = new Intent(this, pNavService.class);
                 bindService(intent, pNavConnection, Context.BIND_AUTO_CREATE);
@@ -92,6 +107,7 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
             }
         } else {
             Log.d(TAG, "API version <23, location assumed enabled");
+            locEnabled = true;
 //            startService(new Intent(this, pNavService.class));
             Intent intent = new Intent(this, pNavService.class);
             bindService(intent, pNavConnection, Context.BIND_AUTO_CREATE);
@@ -113,17 +129,17 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
         startService(new Intent(this, pMobileListenerService.class));
     }
 
-    // Object for binding connection to pNavService
+    // Object for binding connection to pNavService, required to communicate with pNavService
     ServiceConnection pNavConnection = new ServiceConnection() {
         public void onServiceDisconnected(ComponentName name) {
-            isBound = false;
-            pnav = null;
+            pNavIsBound = false;
+            pNav = null;
         }
 
         public void onServiceConnected(ComponentName name, IBinder service) {
-            isBound = true;
+            pNavIsBound = true;
             pNavService.MyBinder binder = (pNavService.MyBinder) service;
-            pnav = binder.getService();
+            pNav = binder.getService();
         }
     };
 
@@ -161,12 +177,14 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay!
                     Log.d(TAG, "API version >=23, location permission granted");
+                    locEnabled = true;
 //                    startService(new Intent(this, pNavService.class));
                     Intent intent = new Intent(this, pNavService.class);
                     bindService(intent, pNavConnection, Context.BIND_AUTO_CREATE);
                 } else {
                     // permission denied, boo!
                     Log.d(TAG, "API version >=23, location permission denied");
+                    locEnabled = false;
                 }
                 return;
             }
@@ -208,7 +226,10 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(13, 100)).title("Marker"));
+        if (locEnabled) {
+            // Add current location to map
+            mMap.setMyLocationEnabled(true);
+        }
     }
 
     public void sendStartStrobeButton(View v) {
@@ -275,29 +296,39 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
         if (requestCode == PLACE_PICKER_REQUEST) {
             Log.d(TAG, "Got place");
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                String toastMsg = String.format("Place: %s", place.getName());
+                Place destPlace = PlacePicker.getPlace(data, this);
+                String toastMsg = String.format("Place: %s", destPlace.getName());
                 Log.d(TAG, "Got place ok");
 
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
 
-                // private GoogleMap mMap;
-                pGMapDirections md = new pGMapDirections();
+                // Private GoogleMap mMap;
+                md = new pGMapDirections();
 
-                LatLng fromPosition = new LatLng(13.687140112679154, 100.53525868803263);
-                LatLng toPosition = new LatLng(13.683660045847258, 100.53900808095932);
+                // Define current location and destination
+                currLoc = pNav.pingLocation();
+                LatLng currLatLng = new LatLng(currLoc.getLatitude(), currLoc.getLongitude());
 
+                // Add directions to map
+                directionsDoc = md.getDocument(currLatLng, destPlace.getLatLng(), pGMapDirections.MODE_BICYCLING);
+                directionPoints = md.getDirection(directionsDoc);
 
-                Document doc = md.getDocument(fromPosition, toPosition, pGMapDirections.MODE_BICYCLING);
-                ArrayList<LatLng> directionPoint = md.getDirection(doc);
-                PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
+                // Clear map and add new route
+                mMap.clear();
+                rectLines = new PolylineOptions().width(5).color(Color.RED);
+                for (int i = 0; i < directionPoints.size(); i++) {
+                    rectLines.add(directionPoints.get(i));
+                }
+                mMap.addPolyline(rectLines);
+                mMap.addMarker(new MarkerOptions().position(destPlace.getLatLng()).title("Destination"));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currLoc.getLatitude(), currLoc.getLongitude()), 14.5f));
 
-                for (int i = 0; i < directionPoint.size(); i++) {
-                    rectLine.add(directionPoint.get(i));
+                if (locEnabled) {
+                    // Add current location to map
+                    mMap.setMyLocationEnabled(true);
                 }
 
-                mMap.addPolyline(rectLine);
 
 
             }

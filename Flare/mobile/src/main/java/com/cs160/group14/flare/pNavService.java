@@ -147,7 +147,7 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
         mGoogleApiClient.connect();
     }
 
-    private Location pingLocation() {
+    public Location pingLocation() {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         // mLastLocation is Location to be sent
         if (mLastLocation != null) {
