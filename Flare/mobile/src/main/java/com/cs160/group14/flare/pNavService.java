@@ -206,7 +206,7 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
                 Log.d(TAG, "Distance: " + firstDistText);
                 Log.d(TAG, "Maneuver: " + firstStepManeuver);
 
-
+                pMessageService.sendLocUpdate(firstDirections);
             }
         } else {
             // Couldn't get the location. Make sure location is enabled on the device
