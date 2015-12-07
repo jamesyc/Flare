@@ -226,8 +226,8 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        // Add current location to map
         if (locEnabled) {
-            // Add current location to map
             mMap.setMyLocationEnabled(true);
         }
     }
@@ -314,6 +314,11 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 directionsDoc = md.getDocument(currLatLng, destPlace.getLatLng(), pGMapDirections.MODE_BICYCLING);
                 directionPoints = md.getDirection(directionsDoc);
 
+                // Enable direction mode for pNav
+                pNav.setNav(true, destPlace.getLatLng(), directionsDoc);
+                pNav.pushDirections();
+
+
                 // Clear map and add new route
                 mMap.clear();
                 rectLines = new PolylineOptions().width(5).color(Color.RED);
@@ -324,13 +329,10 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 mMap.addMarker(new MarkerOptions().position(destPlace.getLatLng()).title("Destination"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currLoc.getLatitude(), currLoc.getLongitude()), 14.5f));
 
+                // Add current location to map
                 if (locEnabled) {
-                    // Add current location to map
                     mMap.setMyLocationEnabled(true);
                 }
-
-
-
             }
         }
     }

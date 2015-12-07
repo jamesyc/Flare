@@ -62,12 +62,28 @@ public class pGMapDirections {
         return node1.getTextContent();
     }
 
+    public String getFirstStepManeuver (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("step");
+        Node node1 = nl1.item(0);
+        NodeList nl2 = node1.getChildNodes();
+        int mPos = getNodeIndex(nl2, "maneuver");
+        String ret;
+        if (mPos > 0) {
+            Node node2 = nl2.item(mPos);
+            Log.i("fStepManeuver", node2.getTextContent());
+            ret = node2.getTextContent();
+        } else {
+            ret = "No Maneuver";
+        }
+        return ret;
+    }
+
     public int getFirstDurationValue (Document doc) {
         NodeList nl1 = doc.getElementsByTagName("duration");
         Node node1 = nl1.item(0);
         NodeList nl2 = node1.getChildNodes();
         Node node2 = nl2.item(getNodeIndex(nl2, "text"));
-        Log.i("DurationValue", node2.getTextContent());
+        Log.i("fDurationValue", node2.getTextContent());
         return Integer.parseInt(node2.getTextContent());
     }
 
@@ -76,7 +92,7 @@ public class pGMapDirections {
         Node node1 = nl1.item(0);
         NodeList nl2 = node1.getChildNodes();
         Node node2 = nl2.item(getNodeIndex(nl2, "text"));
-        Log.i("DistanceText", node2.getTextContent());
+        Log.i("fDistanceText", node2.getTextContent());
         return node2.getTextContent();
     }
 

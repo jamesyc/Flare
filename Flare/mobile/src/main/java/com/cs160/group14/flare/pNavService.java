@@ -23,6 +23,7 @@ import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -35,6 +36,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
 
+import org.w3c.dom.Document;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -65,6 +67,15 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
     // Most recent location object, and LocationRequest object
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
+
+    // Navigation mode settings
+    boolean navigationMode = false;
+    LatLng destLatLng;
+    Document directionsDoc;
+    pGMapDirections md = null;
+    String firstDirections;
+    String firstDistText;
+    String firstStepManeuver;
 
     // Location updates intervals in sec
     private static int UPDATE_INTERVAL = 5000; // 5 sec
@@ -162,6 +173,46 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
         return mLastLocation;
     }
 
+    public void setNav(boolean nMode, LatLng dLatLng, Document dDoc) {
+        navigationMode = nMode;
+        destLatLng = dLatLng;
+        directionsDoc = dDoc;
+    }
+
+    public void pushDirections() {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        // mLastLocation is Location to be sent
+        if (mLastLocation != null) {
+            // Current location
+            double latitude = mLastLocation.getLatitude();
+            double longitude = mLastLocation.getLongitude();
+            LatLng currLatLng = new LatLng(latitude, longitude);
+
+            // Get latest directions
+            md = new pGMapDirections();
+            directionsDoc = md.getDocument(currLatLng, destLatLng, pGMapDirections.MODE_BICYCLING);
+            String firstDirectionsNew = md.getFirstHTMLInstructions(directionsDoc);
+            String firstDistTextNew = md.getFirstDistanceText(directionsDoc);
+            String firstStepManeuverNew = md.getFirstStepManeuver(directionsDoc);
+
+            // Check if directions changed
+            if (!firstDirectionsNew.equals(firstDirections) || !firstDistTextNew.equals(firstDistText)) {
+                // New directions, push to watch
+                firstDirections = firstDirectionsNew;
+                firstDistText = firstDistTextNew;
+                firstStepManeuver = firstStepManeuverNew;
+                Log.d(TAG, "Direction update");
+                Log.d(TAG, "Directions: " + firstDirections);
+                Log.d(TAG, "Distance: " + firstDistText);
+                Log.d(TAG, "Maneuver: " + firstStepManeuver);
+
+
+            }
+        } else {
+            // Couldn't get the location. Make sure location is enabled on the device
+        }
+    }
+
     @Override
      public void onConnected(Bundle arg0) {
         Log.d(TAG, "onConnected service");
@@ -176,8 +227,16 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
         mLastLocation = location;
         Log.d(TAG, "Location changed!");
 
+        // TODO
+        // Need to implement code that checks if we're at destination, and then turn off navigation
+        // if (mLastLocation == destinationLocation)
+        // navigationMode = false;
+
         // Get directions, send new location to watch!
         pingLocation();
+        if (navigationMode) {
+            pushDirections();
+        }
     }
 
     protected void createLocationRequest() {
