@@ -2,12 +2,15 @@ package com.cs160.group14.flare;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -58,6 +61,9 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
     private GoogleApiClient mGoogleApiClient;
     int PLACE_PICKER_REQUEST = 33;
 
+    // Binding pNavService
+    pNavService pnav;
+    boolean isBound = false;
 
     static final String TAG = "pMapsActivity";
     @Override
@@ -75,11 +81,16 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             } else {
                 Log.d(TAG, "API version >=23, location is enabled");
-                startService(new Intent(this, pNavService.class));
+//                startService(new Intent(this, pNavService.class));
+                Intent intent = new Intent(this, pNavService.class);
+                bindService(intent, pNavConnection, Context.BIND_AUTO_CREATE);
+
             }
         } else {
             Log.d(TAG, "API version <23, location assumed enabled");
-            startService(new Intent(this, pNavService.class));
+//            startService(new Intent(this, pNavService.class));
+            Intent intent = new Intent(this, pNavService.class);
+            bindService(intent, pNavConnection, Context.BIND_AUTO_CREATE);
         }
 
         setUpMapIfNeeded();
@@ -95,6 +106,19 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 .addOnConnectionFailedListener(this)
                 .build();
     }
+
+    ServiceConnection pNavConnection = new ServiceConnection() {
+        public void onServiceDisconnected(ComponentName name) {
+            isBound = false;
+            pnav = null;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            isBound = true;
+            pNavService.MyBinder binder = (pNavService.MyBinder) service;
+            pnav = binder.getService();
+        }
+    };
 
     @Override
     public void onConnectionSuspended(int arg0) {
@@ -120,7 +144,9 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay!
                     Log.d(TAG, "API version >=23, location permission granted");
-                    startService(new Intent(this, pNavService.class));
+//                    startService(new Intent(this, pNavService.class));
+                    Intent intent = new Intent(this, pNavService.class);
+                    bindService(intent, pNavConnection, Context.BIND_AUTO_CREATE);
                 } else {
                     // permission denied, boo!
                     Log.d(TAG, "API version >=23, location permission denied");
@@ -237,9 +263,12 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
+            Log.d(TAG, "Got place");
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
                 String toastMsg = String.format("Place: %s", place.getName());
+                Log.d(TAG, "Got place ok");
+
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
 
