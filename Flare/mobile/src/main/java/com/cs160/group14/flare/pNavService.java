@@ -154,7 +154,7 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
             Log.d(TAG, "Location obtained!!!");
             double latitude = mLastLocation.getLatitude();
             double longitude = mLastLocation.getLongitude();
-            Log.d(TAG, "Location lat:" + latitude + " lon:" + longitude);
+            Log.d(TAG, "Location currently lat:" + latitude + " lon:" + longitude);
         } else {
             // Couldn't get the location. Make sure location is enabled on the device
             Log.d(TAG, "Location is currently set to null! Darn.");

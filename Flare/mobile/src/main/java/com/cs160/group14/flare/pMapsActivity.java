@@ -47,34 +47,38 @@ import static com.google.android.gms.location.LocationServices.API;
  * Final product should just be a map with destination input
  */
 public class pMapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    static final String TAG = "pMapsActivity";
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     BroadcastReceiver mMessageReceiver;
     IntentFilter myFilter;
 
+    // Incrementing counter for testing nav updates
     private int counter;
-    private int requestCode;
-    // I have no clue what the following line does but it seems to be needed
-    private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 99;
 
+    // Google API connection object
     private GoogleApiClient mGoogleApiClient;
-    int PLACE_PICKER_REQUEST = 33;
+
+    // Number for requestCode returns
+    private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 99;
+    private final int PLACE_PICKER_REQUEST = 33;
 
     // Binding pNavService
     pNavService pnav;
     boolean isBound = false;
 
-    static final String TAG = "pMapsActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_p_maps);
 
+        // This enables internet access to the Google Directions API for the apache http client
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        // Ask for ACCESS_FINE_LOCATION permissions
+        // Ask for ACCESS_FINE_LOCATION permissions, and then start pNavService
         if (android.os.Build.VERSION.SDK_INT >= 23) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "API version >=23, location is not enabled; need to request");
@@ -93,11 +97,7 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
             bindService(intent, pNavConnection, Context.BIND_AUTO_CREATE);
         }
 
-        setUpMapIfNeeded();
-        setUpBroadcastReceiver();
-        startService(new Intent(this, pMessageService.class));
-        startService(new Intent(this, pMobileListenerService.class));
-
+        // Connect to Google API client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(API)
                 .addApi(Wearable.API).addApi(LocationServices.API)
@@ -105,8 +105,15 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        // Set up activity
+        setUpMapIfNeeded();
+        setUpBroadcastReceiver();
+        startService(new Intent(this, pMessageService.class));
+        startService(new Intent(this, pMobileListenerService.class));
     }
 
+    // Object for binding connection to pNavService
     ServiceConnection pNavConnection = new ServiceConnection() {
         public void onServiceDisconnected(ComponentName name) {
             isBound = false;
@@ -121,19 +128,29 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
     };
 
     @Override
-    public void onConnectionSuspended(int arg0) {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
     public void onConnected(Bundle arg0) {
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d(TAG, "---- Failed connection result: " + connectionResult.getErrorMessage());
+        // Connection attempt to Google API client failed, so try again
         mGoogleApiClient.connect();
     }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpMapIfNeeded();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
+    }
+
+    // If API 23 or higher and need to ask for ACCESS_FINE_LOCATION, get result here
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -154,13 +171,6 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 return;
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, myFilter);
     }
 
     /**
@@ -201,27 +211,27 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
         mMap.addMarker(new MarkerOptions().position(new LatLng(13, 100)).title("Marker"));
     }
 
-    public void sendStartStrobeButton(View v){
+    public void sendStartStrobeButton(View v) {
         //pMessageService.sendMessageToWear(MobileFlags.START_STROBE, MobileFlags.START_STROBE);
         pMessageService.sendStrobeStart();
     }
 
-    public void sendEndStrobeButton(View v){
+    public void sendEndStrobeButton(View v) {
         //pMessageService.sendMessageToWear(MobileFlags.STOP_STROBE,MobileFlags.STOP_STROBE);
         pMessageService.sendStrobeStop();
     }
 
-    public void sendToggleModeMessage(View v){
+    public void sendToggleModeMessage(View v) {
         //pMessageService.sendMessageToWear(MobileFlags.TOGGLE_MODE, MobileFlags.TOGGLE_MODE );
         pMessageService.sendToggleMessage();
     }
 
-    public void sendLocationUpdateMessage(View v){
+    public void sendLocationUpdateMessage(View v) {
         /** THIS SHOULD BE CHANGED TO REFLECT THE ACTUAL DIRECITONS WE WANT TO SEND**/
         pMessageService.sendLocUpdate("Street " + counter++);
     }
 
-    public void setUpBroadcastReceiver(){
+    public void setUpBroadcastReceiver() {
         myFilter = new IntentFilter();
         myFilter.addAction(FlareConstants.TOGGLE_MODE);
         myFilter.addAction(FlareConstants.NEW_LOC_UPDATE);
@@ -229,10 +239,10 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "Received broadcast: " + intent.getAction());
-                if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
+                if (intent.getAction().equalsIgnoreCase(FlareConstants.TOGGLE_MODE)) {
                     Log.d(TAG, "Received Toggle");
                     handleNavToggle();
-                } else if (intent.getAction().equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)){
+                } else if (intent.getAction().equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)) {
                     Log.d(TAG, "Received Loc Update");
                     handleLocUpdate();
                 }
@@ -242,15 +252,15 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
         Log.d(TAG, "Finished setting up Broadcast receiver");
     }
 
-    public void handleNavToggle(){
+    public void handleNavToggle() {
 
     }
 
-    public void handleLocUpdate(){
+    public void handleLocUpdate() {
         /** Might be useful **/
     }
 
-    public void selectDestination(View v){
+    public void selectDestination(View v) {
         Log.d(TAG, "Launching select dest activity");
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -283,7 +293,7 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
                 ArrayList<LatLng> directionPoint = md.getDirection(doc);
                 PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
 
-                for(int i = 0 ; i < directionPoint.size() ; i++) {
+                for (int i = 0; i < directionPoint.size(); i++) {
                     rectLine.add(directionPoint.get(i));
                 }
 
@@ -294,7 +304,7 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
         }
     }
 
-    public void launchTutorial(View v){
+    public void launchTutorial(View v) {
         Log.d(TAG, "Launching tutorial activity");
         startActivity(new Intent(this, TutorialActivity.class));
 
