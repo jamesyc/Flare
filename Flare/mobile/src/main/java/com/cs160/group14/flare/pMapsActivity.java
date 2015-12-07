@@ -302,35 +302,34 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
 
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
-
-                // Private GoogleMap mMap;
-                md = new pGMapDirections();
-
-                // Define current location and destination
-                currLoc = pNav.pingLocation();
-                LatLng currLatLng = new LatLng(currLoc.getLatitude(), currLoc.getLongitude());
-
-                // Add directions to map
-                directionsDoc = md.getDocument(currLatLng, destPlace.getLatLng(), pGMapDirections.MODE_BICYCLING);
-                directionPoints = md.getDirection(directionsDoc);
-
-                // Enable direction mode for pNav
-                pNav.setNav(true, destPlace.getLatLng(), directionsDoc);
-                pNav.pushDirections();
-
-
-                // Clear map and add new route
-                mMap.clear();
-                rectLines = new PolylineOptions().width(5).color(Color.RED);
-                for (int i = 0; i < directionPoints.size(); i++) {
-                    rectLines.add(directionPoints.get(i));
-                }
-                mMap.addPolyline(rectLines);
-                mMap.addMarker(new MarkerOptions().position(destPlace.getLatLng()).title("Destination"));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currLoc.getLatitude(), currLoc.getLongitude()), 14.5f));
-
-                // Add current location to map
                 if (locEnabled) {
+                    // Private GoogleMap mMap;
+                    md = new pGMapDirections();
+
+                    // Define current location and destination
+                    currLoc = pNav.pingLocation();
+                    LatLng currLatLng = new LatLng(currLoc.getLatitude(), currLoc.getLongitude());
+
+                    // Add directions to map
+                    directionsDoc = md.getDocument(currLatLng, destPlace.getLatLng(), pGMapDirections.MODE_BICYCLING);
+                    directionPoints = md.getDirection(directionsDoc);
+
+                    // Enable direction mode for pNav
+                    pNav.setNav(true, destPlace.getLatLng(), directionsDoc);
+                    pNav.pushDirections();
+
+
+                    // Clear map and add new route
+                    mMap.clear();
+                    rectLines = new PolylineOptions().width(10).color(Color.RED);
+                    for (int i = 0; i < directionPoints.size(); i++) {
+                        rectLines.add(directionPoints.get(i));
+                    }
+                    mMap.addPolyline(rectLines);
+                    mMap.addMarker(new MarkerOptions().position(destPlace.getLatLng()).title("Destination"));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currLoc.getLatitude(), currLoc.getLongitude()), 14.5f));
+
+                    // Add current location to map
                     mMap.setMyLocationEnabled(true);
                 }
             }
