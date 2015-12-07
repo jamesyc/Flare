@@ -24,12 +24,12 @@ public class wSignalingActivity extends WearableActivity{
     public BroadcastReceiver mMessageReceiver;
 
     static boolean sigBool = true; //This determines which color to show next
-    public static boolean stillRunning = false;
+    //public static boolean stillRunning = false;
 
-    static int limitInSeconds = 30;
-    int frequency = 500;
-    int color1 = Color.CYAN;
-    int color2 = Color.GREEN;
+    static int limitInSeconds = 30000;
+    int frequency = 100;
+    int color1 = Color.rgb(237,156,26); //orange
+    int color2 = Color.WHITE; //gray
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,8 @@ public class wSignalingActivity extends WearableActivity{
             finish();
         }
         setContentView(R.layout.signaling_layout);
-        stillRunning = true;
+        WatchFlags.strobeIsOn = true;
+        //stillRunning = true;
         setUpBroadcastReceiver();
 
         createAndStartTimer(frequency);
@@ -63,7 +64,8 @@ public class wSignalingActivity extends WearableActivity{
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        stillRunning = false;
+        //stillRunning = false;
+        WatchFlags.strobeIsOn = false;
     }
 
     private void createAndStartTimer(final int frequency){
@@ -72,9 +74,14 @@ public class wSignalingActivity extends WearableActivity{
             public void run() {
                 int count = 0;
                 while (true){
-                    if (!stillRunning || count >  wSignalingActivity.limitInSeconds)return;
+                    if (!WatchFlags.strobeIsOn || count >  wSignalingActivity.limitInSeconds) {
+                        WatchFlags.strobeIsOn = false;
+                        finish();
+                        return;
+                    }
                     changeColor();
-                     count+= (frequency) / 1000.0;
+                     count+= frequency;
+                    Log.d(TAG,Integer.toString(count)+String.valueOf(WatchFlags.strobeIsOn));
                     try{
                         Thread.sleep(frequency);
                     } catch (InterruptedException e) {
@@ -108,6 +115,7 @@ public class wSignalingActivity extends WearableActivity{
             public void onReceive(Context context, Intent intent) {
                 // Get extra data included in the Intent
                 Log.d(TAG, "Received Strobe destroy");
+                WatchFlags.strobeIsOn = false;
                 finish();
             }
         };
