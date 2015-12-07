@@ -29,9 +29,12 @@ public class wAccSensor extends Service implements SensorEventListener{
     static float mAccelLast;
     static float mAccel;
     static float mAccelCurrent;
-    static int TIME_THRESH = 250;
+    static int TIME_THRESH = 1000;
 
     static double lasttime = new Double(0);//So that you can implement some kind of timer threshold
+    boolean shakeMode = false;
+    boolean leftMode = false;
+    boolean rightMode = false;
 
     @Override
     public void onCreate() {
@@ -43,19 +46,35 @@ public class wAccSensor extends Service implements SensorEventListener{
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float x = event.values[0];
-        float y = event.values[1];
-        float z = event.values[2];
-        mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
         Long curr_time = System.currentTimeMillis();
         if (WatchFlags.gestureSensingOn && (curr_time > lasttime + TIME_THRESH)) {
             Log.d(TAG, "Sensor changed " + event.values[0] + "-" + event.values[1] + "-" + event.values[2]);
             lasttime = curr_time;
 
-            if(y < -8) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            //mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
+            if(x > 8.5 && !shakeMode && !leftMode) {
+                Log.d(TAG, "Right Gesture position!!!");
+                turnStrobeOn();
+                rightMode = true;
+            }
+            else if (!shakeMode && !leftMode){
+                turnStrobeOff();
+                rightMode = false;
+            }
+
+            if(y < -8.5 && !shakeMode && !rightMode) {
                 Log.d(TAG, "Left Gesture position!!!");
+                turnStrobeOn();
+                leftMode = true;
                 // attempt to detect left gesture position
                 // however some cyclist use vertical handrail which detected as left gesture
+            }
+            else if (!shakeMode && !rightMode){
+                turnStrobeOff();
+                leftMode = false;
             }
 
 
@@ -64,10 +83,17 @@ public class wAccSensor extends Service implements SensorEventListener{
             float gZ = event.values[2] / SensorManager.GRAVITY_EARTH;
             // gForce will be close to 1 when there is no movement
             float gForce = (float)Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-            float SHAKE_THRESHOLD = 1.2f;
-            if(gForce > SHAKE_THRESHOLD) {
+            float SHAKE_THRESHOLD = 1.1f;
+            if(gForce > SHAKE_THRESHOLD && !WatchFlags.strobeIsOn) {
                 Log.d(TAG, "SHAKEDD!!!");
                 turnStrobeOn();
+                shakeMode = true;
+            }
+            else if(gForce > SHAKE_THRESHOLD && WatchFlags.strobeIsOn)  {
+                turnStrobeOff();
+                shakeMode = false;
+                leftMode = false;
+                rightMode = false;
             }
 
         }
@@ -97,7 +123,7 @@ public class wAccSensor extends Service implements SensorEventListener{
             Log.d(TAG, "Gesture sensing mode is off, aborting start strobe command");
             return;
         }
-        if (wSignalingActivity.stillRunning == false) {
+        if (WatchFlags.strobeIsOn == false) {
             startActivity(new Intent(this, wSignalingActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
