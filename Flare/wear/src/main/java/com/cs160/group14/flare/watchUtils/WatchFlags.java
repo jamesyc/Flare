@@ -6,7 +6,7 @@ package com.cs160.group14.flare.watchUtils;
  */
 public class WatchFlags {
 
-
+    public static boolean strobeIsOn = false;
 
     public static boolean gestureSensingOn = true;
 
