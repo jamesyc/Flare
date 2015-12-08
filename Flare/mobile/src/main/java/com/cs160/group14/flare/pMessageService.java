@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.Pair;
 
 import com.dataless.flaresupportlib.FlareConstants;
 import com.dataless.flaresupportlib.FlareDatagram;
@@ -19,6 +20,8 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -148,9 +151,27 @@ public class pMessageService extends Service implements
     /**This is how we push location updates to the wear.
      * Gson serializes everything, you just need to fill in the right arguments
      * and update the FlareDatagram class accordingly
+     *
+     * Note: CHANGE - add arguments instead of just taking "First Directions"
+     * Problem: (MUST) Setting current street? WEAR should call NavFieldSetter to update CurrLocActivity.
      */
-    public static void sendLocUpdate(String tempArg){
-        sendMessageToWear(FlareConstants.NEW_LOC_UPDATE,
-                FlareDatagram.makeLocUpdateDatagram(tempArg).serializeMe());
+    public static void sendLocUpdate(String firstDirections, String firstDistText, String firstStepManeuver) {//added arguments
+        //Create FlareDatagram loaded with Direction information
+        FlareDatagram datagram = FlareDatagram.makeLocUpdateDatagram("dummy current street");
+        datagram.distanceNextTurn = new Pair<>(true, Double.parseDouble(firstDistText));//load with distance
+        if (!firstStepManeuver.equalsIgnoreCase("No Maneuver")) {//if there is a turn, parse firstStepManeuver
+            ArrayList<String> directions;
+            directions = new ArrayList<String>(Arrays.asList(firstStepManeuver.split("-")));//eg: turn-sharp-left
+            if (directions.contains("left")) {
+                datagram.currTurn = new Pair<>(true, FlareConstants.Turn.LEFT);
+            } else if (directions.contains("right")) {
+                datagram.currTurn = new Pair<>(true, FlareConstants.Turn.RIGHT);
+            }
+        }
+        //test send datagram to wear: manual set currTurn, wear SUCCESSFULLY retrieves.
+//        datagram.currTurn = new Pair<>(true, FlareConstants.Turn.RIGHT);
+        sendMessageToWear(FlareConstants.NEW_LOC_UPDATE, datagram.serializeMe());
+//        sendMessageToWear(FlareConstants.NEW_LOC_UPDATE,
+//                FlareDatagram.makeLocUpdateDatagram("current street").serializeMe());//makeLocUpdateDatagram(takes Current Street!)
     }
 }

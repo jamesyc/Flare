@@ -14,7 +14,7 @@ public class NavFieldSetter {
 
     public static void updateStreet(FlareDatagram data){
         if (data.currStreet.length() > 0){
-            wMainActivity.currStreet = data.currStreet;
+//            wMainActivity.currStreet = data.currStreet;
             CurrentLocActivity.currStreet = data.currStreet;
         }
     }

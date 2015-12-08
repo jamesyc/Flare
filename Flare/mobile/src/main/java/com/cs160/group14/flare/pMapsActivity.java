@@ -249,7 +249,7 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
 
     public void sendLocationUpdateMessage(View v) {
         /** THIS SHOULD BE CHANGED TO REFLECT THE ACTUAL DIRECITONS WE WANT TO SEND**/
-        pMessageService.sendLocUpdate("Street " + counter++);
+        pMessageService.sendLocUpdate("Street " + counter++, "1", "1");
     }
 
     public void setUpBroadcastReceiver() {

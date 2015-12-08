@@ -11,12 +11,32 @@
     android:keepScreenOn="true"
     android:background="#272222">
 
-    <TextView android:id="@+id/currentLocTextHolder"
-        app:layout_box="all"
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/bicycle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:contentDescription="bike_icon" />
+
+    <TextView android:id="@+id/currentLocTitle2"
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+        android:text="Current Street"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:textColor="#ffffff"
+        android:textSize="17dp" />
+
+    <TextView android:id="@+id/currentStreet2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/currentLocPlaceholder"
-        android:gravity="center"/>
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+        android:textColor="#ffffff"
+        android:textSize="17dp" />
 
     <ImageView
         android:layout_width="100dp"

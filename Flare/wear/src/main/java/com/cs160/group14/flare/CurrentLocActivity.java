@@ -50,6 +50,7 @@ public class CurrentLocActivity extends WearableActivity{
     /** Might have to add a second view to this, but for now,
      * regardless of whether navmode is on or not, we show current location n stuff
      * Note: current_loc_layout is for NAVMODE OFF; current_loc_layout2 is for NAVMODE ON (4 dots)
+     * Setup currStreet
      */
     public void setUpViews(){
         String mode = "navModeOff";

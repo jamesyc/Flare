@@ -11,6 +11,7 @@ import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
@@ -43,7 +44,7 @@ public class wMainActivity extends WearableActivity {
     public static Turn currTurnType = Turn.STRAIGHT;
     public static Turn nextTurnType = Turn.STRAIGHT;
     public static double distToTurn = 0.0;
-    public static String currStreet = "This should never be shown to users";
+//    public static String currStreet = "This should never be shown to users";
 
 
     @Override
@@ -76,10 +77,29 @@ public class wMainActivity extends WearableActivity {
         if (WatchFlags.navModeOn){
             /** ADD TEXT/IMAGE VIEW UPDATES **/
             setContentView(R.layout.directions_layout);//1_of_4 dots
-            mTextView = (TextView) findViewById(R.id.directionsTextHolder);
-            mTextView.setText(getString(R.string.directionsStringHolder)
-                    + getString(R.string.streetHolder) + " " + currStreet);
+//            mTextView = (TextView) findViewById(R.id.directionsTextHolder);
+            ImageView manueverImg = (ImageView) findViewById(R.id.manueverImg);
+
+            //Set DistanceToNextTurn based on Datagram
+            TextView distToImg = (TextView) findViewById(R.id.distance_toImg);
+            distToImg.setText(Double.toString(distToTurn) + "mi");
+
+
+            //Set manueverImg based on currTurn maneuver; either LEFT or RIGHT because of pMessageService
+            if (currTurnType.equals(currTurnType.LEFT)) {
+                manueverImg.setImageResource(R.drawable.left_arrow);
+            } else if (currTurnType.equals(currTurnType.RIGHT)) {
+                manueverImg.setImageResource(R.drawable.right_arrow);
+            } else {//Straight arrow Image
+                manueverImg.setImageResource(R.drawable.straight_arrow);
+            }
+
+//            mTextView.setText(
+//                    getString(R.string.streetHolder) + " " + currStreet);
+
             mContainerView = (BoxInsetLayout) findViewById(R.id.directionsContainer);
+            Log.d("NavModeOn", "manuever: " + currTurnType);
+
         } else {
             setContentView(R.layout.activity_w_main);//1_of_3 dots
             mContainerView = (BoxInsetLayout) findViewById(R.id.mainWearContainer);

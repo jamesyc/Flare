@@ -52,6 +52,13 @@ public class FlareDatagram {
         return data;
     }
 
+    public static FlareDatagram makeStreetUpdateDatagram(String currentStreet){
+        FlareDatagram data = defaultLocUpdate();
+        data.currStreet = currentStreet;
+
+        return data;
+    }
+
     public String serializeMe(){
         return new Gson().toJson(this, FlareDatagram.class);
     }

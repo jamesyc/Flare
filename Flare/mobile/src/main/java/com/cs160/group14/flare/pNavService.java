@@ -202,11 +202,11 @@ public class pNavService extends Service implements GoogleApiClient.ConnectionCa
                 firstDistText = firstDistTextNew;
                 firstStepManeuver = firstStepManeuverNew;
                 Log.d(TAG, "Direction update");
-                Log.d(TAG, "Directions: " + firstDirections);
+                Log.d(TAG, "Directions: " + firstDirections);//E.g: "Head east on Dwight way..."
                 Log.d(TAG, "Distance: " + firstDistText);
-                Log.d(TAG, "Maneuver: " + firstStepManeuver);
+                Log.d(TAG, "Maneuver: " + firstStepManeuver);//E.g: sharp left turn, head straight, etc.
 
-                pMessageService.sendLocUpdate(firstDirections);
+                pMessageService.sendLocUpdate(firstDirections, firstDistText, firstStepManeuver);
             }
         } else {
             // Couldn't get the location. Make sure location is enabled on the device
