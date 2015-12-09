@@ -82,7 +82,7 @@ public class wMainActivity extends WearableActivity {
 
             //Set DistanceToNextTurn based on Datagram
             TextView distToImg = (TextView) findViewById(R.id.distance_toImg);
-            distToImg.setText(distToTurn + " mi");
+            distToImg.setText(distToTurn);
 
 
             //Set manueverImg based on currTurn maneuver; either LEFT or RIGHT because of pMessageService
