@@ -61,7 +61,7 @@ public class CurrentLocActivity extends WearableActivity{
             setContentView(R.layout.current_loc_layout);//3 dots
         }
         mContainerView = (BoxInsetLayout) findViewById(R.id.currentLocContainer);
-        mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
+//        mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
 
         mTextView.setText(mTextView.getText() + " " + mode + "\n" + currStreet);
     }
