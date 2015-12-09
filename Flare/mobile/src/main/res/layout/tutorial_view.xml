@@ -61,13 +61,19 @@
             android:textColor="#ee9e61"
             android:gravity="center"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Dismiss"
 
+
+        <Button
+            android:layout_width="240dp"
+            android:layout_height="50dp"
+            android:text="Dismiss"
             android:onClick="onExitClick"
-            android:background="#eb9a60"/>
+            android:textSize="22dp"
+            android:textColor="#ee9e61"
+            android:layout_marginBottom="21dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 
