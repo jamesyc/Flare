@@ -10,11 +10,15 @@
     <!--android:layout_height="wrap_content"-->
     <!--android:text="Click to stop strobe"-->
     <!--android:onClick="sendEndStrobeButton"/>-->
-    <!--<Button-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Click to toggle nav mode on/off"-->
-    <!--android:onClick="sendToggleModeMessage"/>-->
+    <Button
+    android:layout_width="240dp"
+    android:layout_height="50dp"
+    android:text="Nav Mode On/Off"
+    android:onClick="sendToggleModeMessage"
+        android:layout_marginBottom="8dp"
+        android:layout_above="@+id/dest_button"
+        android:layout_alignStart="@+id/launch_btn"
+        android:textSize="18dp" />
     <!--<Button-->
     <!--android:layout_width="fill_parent"-->
     <!--android:layout_height="wrap_content"-->
@@ -28,7 +32,7 @@
         android:id="@+id/launch_btn"
         android:textSize="22dp"
         android:textColor="#ee9e61"
-        android:layout_marginBottom="21dp"
+        android:layout_marginBottom="66dp"
         android:layout_above="@+id/dest_button"
         android:layout_centerHorizontal="true" />
 
@@ -38,12 +42,12 @@
         android:text="Select Destination"
         android:onClick="selectDestination"
         android:id="@+id/dest_button"
-        android:layout_marginBottom="49dp"
+        android:layout_marginBottom="22dp"
         android:textSize="22dp"
         android:textColor="#e66868"
+        android:textAlignment="gravity"
         android:layout_above="@+id/map"
-        android:layout_alignStart="@+id/launch_btn"
-        android:textAlignment="gravity" />
+        android:layout_alignStart="@+id/launch_btn" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"

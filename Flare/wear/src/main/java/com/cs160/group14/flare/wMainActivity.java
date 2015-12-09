@@ -43,7 +43,7 @@ public class wMainActivity extends WearableActivity {
     FlareDatagram gram = null;
     public static Turn currTurnType = Turn.STRAIGHT;
     public static Turn nextTurnType = Turn.STRAIGHT;
-    public static double distToTurn = 0.0;
+    public static String distToTurn = "0.0";
 //    public static String currStreet = "This should never be shown to users";
 
 
@@ -82,7 +82,7 @@ public class wMainActivity extends WearableActivity {
 
             //Set DistanceToNextTurn based on Datagram
             TextView distToImg = (TextView) findViewById(R.id.distance_toImg);
-            distToImg.setText(Double.toString(distToTurn) + " mi");
+            distToImg.setText(distToTurn + " mi");
 
 
             //Set manueverImg based on currTurn maneuver; either LEFT or RIGHT because of pMessageService

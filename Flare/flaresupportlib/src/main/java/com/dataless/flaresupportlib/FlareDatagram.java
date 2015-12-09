@@ -15,7 +15,7 @@ public class FlareDatagram {
     public String currStreet;
 
     /** If these have a false as first val, wear assumes no change **/
-    public Pair<Boolean, Double> distanceNextTurn;
+    public Pair<Boolean, String> distanceNextTurn;
 
     public Pair<Boolean, FlareConstants.Turn> currTurn;
     public Pair<Boolean, FlareConstants.Turn> nextTurn;
@@ -38,7 +38,7 @@ public class FlareDatagram {
 
     private static FlareDatagram defaultLocUpdate(){
         FlareDatagram datagram = new FlareDatagram(FlareConstants.NEW_LOC_UPDATE);
-        datagram.distanceNextTurn = new Pair<>(false, 0.0);
+        datagram.distanceNextTurn = new Pair<>(false, "0.0");
         datagram.currTurn = new Pair<>(false, FlareConstants.Turn.LEFT);
         datagram.nextTurn = new Pair<>(false, FlareConstants.Turn.LEFT);
         return datagram;
@@ -52,12 +52,12 @@ public class FlareDatagram {
         return data;
     }
 
-    public static FlareDatagram makeStreetUpdateDatagram(String currentStreet){
-        FlareDatagram data = defaultLocUpdate();
-        data.currStreet = currentStreet;
-
-        return data;
-    }
+//    public static FlareDatagram makeStreetUpdateDatagram(String currentStreet){
+//        FlareDatagram data = defaultLocUpdate();
+//        data.currStreet = currentStreet;
+//
+//        return data;
+//    }
 
     public String serializeMe(){
         return new Gson().toJson(this, FlareDatagram.class);
