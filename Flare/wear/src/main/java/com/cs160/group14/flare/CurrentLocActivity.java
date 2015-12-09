@@ -61,9 +61,14 @@ public class CurrentLocActivity extends WearableActivity{
             setContentView(R.layout.current_loc_layout);//3 dots
         }
         mContainerView = (BoxInsetLayout) findViewById(R.id.currentLocContainer);
-//        mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
-
-        mTextView.setText(mTextView.getText() + " " + mode + "\n" + currStreet);
+////        mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
+//
+//        if (mTextView.getText() == null) {
+//            mTextView.setText("Nav " " + mode + "\n" + currStreet);
+//        } else {
+//            mTextView.setText(mTextView.getText() + " " + mode + "\n" + currStreet);
+//
+//        }
     }
 
     public void setRightActivity(){

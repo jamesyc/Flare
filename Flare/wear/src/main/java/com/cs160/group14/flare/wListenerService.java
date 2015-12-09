@@ -61,6 +61,8 @@ public class wListenerService extends WearableListenerService  implements
             handleStartStrobe();
         } else if (path.equalsIgnoreCase(FlareConstants.TOGGLE_MODE)){
             handleToggleNavMode();
+        } else if (path.equalsIgnoreCase(FlareConstants.NAV_MODE_ON)){
+            handleNavModeOn();
         } else if (path.equalsIgnoreCase(FlareConstants.NEW_LOC_UPDATE)){
             String strData = new String(messageEvent.getData(), StandardCharsets.UTF_8);
             handleLocUpdate(FlareDatagram.deserialize(strData));
@@ -81,6 +83,11 @@ public class wListenerService extends WearableListenerService  implements
 
     public void handleToggleNavMode(){
         WatchFlags.navModeOn = !WatchFlags.navModeOn;
+        broadCastNavmodeToggle();
+    }
+
+    public void handleNavModeOn(){
+        WatchFlags.navModeOn = true;
         broadCastNavmodeToggle();
     }
 
