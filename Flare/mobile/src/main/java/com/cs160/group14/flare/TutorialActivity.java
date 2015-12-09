@@ -13,6 +13,12 @@ public class TutorialActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tutorial_view);
+        /*
+        getActionBar().setTitle("Flare Tutorial");
+        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#eb9a60")));
+       */
+
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     public void onExitClick(View v){

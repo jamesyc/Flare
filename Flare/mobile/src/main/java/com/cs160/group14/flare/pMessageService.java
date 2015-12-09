@@ -148,6 +148,11 @@ public class pMessageService extends Service implements
                 FlareDatagram.makeToggleModeDataGram().serializeMe());
     }
 
+    public static void sendNavOnMessage(){
+        sendMessageToWear(FlareConstants.NAV_MODE_ON,
+                FlareDatagram.makeToggleModeDataGram().serializeMe());
+    }
+
     /**This is how we push location updates to the wear.
      * Gson serializes everything, you just need to fill in the right arguments
      * and update the FlareDatagram class accordingly
@@ -158,7 +163,8 @@ public class pMessageService extends Service implements
     public static void sendLocUpdate(String firstDirections, String firstDistText, String firstStepManeuver) {//added arguments
         //Create FlareDatagram loaded with Direction information
         FlareDatagram datagram = FlareDatagram.makeLocUpdateDatagram("dummy current street");
-        datagram.distanceNextTurn = new Pair<>(true, Double.parseDouble(firstDistText));//load with distance
+
+        datagram.distanceNextTurn = new Pair<>(true, Double.parseDouble(firstDistText.replaceAll("[^0-9\\.]", "")));//load with distance
         if (!firstStepManeuver.equalsIgnoreCase("No Maneuver")) {//if there is a turn, parse firstStepManeuver
             ArrayList<String> directions;
             directions = new ArrayList<String>(Arrays.asList(firstStepManeuver.split("-")));//eg: turn-sharp-left
