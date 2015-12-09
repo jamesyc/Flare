@@ -1,45 +1,56 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@android:style/Theme.Holo.NoActionBar"
+    android:background="@drawable/m_background">
 
-<Button
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Click to start strobe"
-    android:onClick="sendStartStrobeButton"/>
+
+    <!--<Button-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Click to stop strobe"-->
+    <!--android:onClick="sendEndStrobeButton"/>-->
+    <!--<Button-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Click to toggle nav mode on/off"-->
+    <!--android:onClick="sendToggleModeMessage"/>-->
+    <!--<Button-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Click to send test nav update"-->
+    <!--android:onClick="sendLocationUpdateMessage"/>-->
     <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Click to stop strobe"
-        android:onClick="sendEndStrobeButton"/>
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:text="Launch Tutorial"
+        android:onClick="launchTutorial"
+        android:id="@+id/launch_btn"
+        android:textSize="22dp"
+        android:textColor="#ee9e61"
+        android:layout_marginBottom="21dp"
+        android:layout_above="@+id/dest_button"
+        android:layout_centerHorizontal="true" />
+
     <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Click to toggle nav mode on/off"
-        android:onClick="sendToggleModeMessage"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Click to send test nav update"
-        android:onClick="sendLocationUpdateMessage"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
         android:text="Select Destination"
         android:onClick="selectDestination"
-        />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Launch tutorial"
-        android:onClick="launchTutorial"
-        />
+        android:id="@+id/dest_button"
+        android:layout_marginBottom="49dp"
+        android:textSize="22dp"
+        android:textColor="#e66868"
+        android:layout_above="@+id/map"
+        android:layout_alignStart="@+id/launch_btn" />
 
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:id="@+id/map" tools:context=".pMapsActivity"
-    android:name="com.google.android.gms.maps.SupportMapFragment" />
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="273dp" android:id="@+id/map" tools:context=".pMapsActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
 
-</LinearLayout>
+</RelativeLayout>
