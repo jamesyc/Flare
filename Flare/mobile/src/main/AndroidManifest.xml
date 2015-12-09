@@ -33,7 +33,8 @@
         <activity
             android:name=".pMapsActivity"
             android:label="@string/title_activity_p_maps"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,7 +43,8 @@
 
         </activity>
         <activity android:name=".TutorialActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+        android:theme="@android:style/Theme.NoTitleBar"/>
 
 
         <service
