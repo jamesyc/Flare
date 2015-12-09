@@ -162,7 +162,8 @@ public class pMessageService extends Service implements
      */
     public static void sendLocUpdate(String firstDirections, String firstDistText, String firstStepManeuver) {//added arguments
         //Create FlareDatagram loaded with Direction information
-        FlareDatagram datagram = FlareDatagram.makeLocUpdateDatagram("2530 Ridge Road");
+        FlareDatagram datagram = FlareDatagram.makeLocUpdateDatagram(firstDirections);
+        datagram.currStreet = "2530 Ridge Road";
 
         datagram.distanceNextTurn = new Pair<>(true, firstDistText);//load with distance
         if (!firstStepManeuver.equalsIgnoreCase("No Maneuver")) {//if there is a turn, parse firstStepManeuver
