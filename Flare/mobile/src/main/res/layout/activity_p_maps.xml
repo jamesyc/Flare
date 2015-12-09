@@ -42,7 +42,8 @@
         android:textSize="22dp"
         android:textColor="#e66868"
         android:layout_above="@+id/map"
-        android:layout_alignStart="@+id/launch_btn" />
+        android:layout_alignStart="@+id/launch_btn"
+        android:textAlignment="gravity" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
