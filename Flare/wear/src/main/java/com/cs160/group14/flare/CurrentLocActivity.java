@@ -17,6 +17,8 @@ import com.cs160.group14.flare.watchUtils.SwipeGestureListener;
 import com.cs160.group14.flare.watchUtils.WatchFlags;
 import com.dataless.flaresupportlib.FlareConstants;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by AlexJr on 11/24/15.
  * This is the second screen to the left.
@@ -60,6 +62,10 @@ public class CurrentLocActivity extends WearableActivity{
         } else {
             setContentView(R.layout.current_loc_layout);//3 dots
         }
+        //update TextView to reflect current Street set by NavFieldSetter
+        TextView currentStreet = (TextView)findViewById(R.id.currentStreet);
+        currentStreet.setText(currStreet);
+
         mContainerView = (BoxInsetLayout) findViewById(R.id.currentLocContainer);
 ////        mTextView = (TextView) findViewById(R.id.currentLocTextHolder);
 //
