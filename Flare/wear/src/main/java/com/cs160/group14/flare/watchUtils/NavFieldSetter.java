@@ -1,5 +1,7 @@
 package com.cs160.group14.flare.watchUtils;
 
+import android.util.Log;
+
 import com.cs160.group14.flare.CurrentLocActivity;
 import com.cs160.group14.flare.wMainActivity;
 import com.dataless.flaresupportlib.FlareDatagram;
@@ -16,6 +18,7 @@ public class NavFieldSetter {
         if (data.currStreet.length() > 0){
 //            wMainActivity.currStreet = data.currStreet;
             CurrentLocActivity.currStreet = data.currStreet;
+            Log.d("NavFieldSetter", "currStreet set to: " + CurrentLocActivity.currStreet);
         }
     }
 

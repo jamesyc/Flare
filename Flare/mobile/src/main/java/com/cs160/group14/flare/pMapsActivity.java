@@ -246,6 +246,10 @@ public class pMapsActivity extends FragmentActivity implements GoogleApiClient.C
     public void sendToggleModeMessage(View v) {
         //pMessageService.sendMessageToWear(MobileFlags.TOGGLE_MODE, MobileFlags.TOGGLE_MODE );
         pMessageService.sendToggleMessage();
+        if (pNavIsBound) {
+            pNav.stopLocationUpdates();
+        }
+        mMap.clear();
     }
 
     public void sendLocationUpdateMessage(View v) {

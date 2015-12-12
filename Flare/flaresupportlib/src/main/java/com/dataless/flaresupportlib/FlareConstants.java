@@ -11,6 +11,7 @@ public class FlareConstants {
     public static final String TOGGLE_MODE = "TOGGLE_MODE";
 
     public static final String NEW_LOC_UPDATE = "NEW_LOC_UPDATE";
+    public static final String NAV_MODE_ON = "NAV_MODE_ON";
 
     public enum Turn {
         LEFT,
